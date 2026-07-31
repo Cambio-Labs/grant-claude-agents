@@ -138,6 +138,7 @@ Pass Mauricio:
 - Voice Waxer's complete `=== VOICE: STYLED SECTIONS ===` block
 - Miguel's FORMAT CONSTRAINTS section (page limit, required sections, deadline,
   mandatory attachments)
+- Miguel's REQUIREMENTS section (Mandatory/Preferred/Optional list, for section-heading compliance checks)
 
 Wait for Mauricio's complete output before continuing.
 

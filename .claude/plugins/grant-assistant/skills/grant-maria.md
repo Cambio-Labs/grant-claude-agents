@@ -13,6 +13,9 @@ and access to `knowledge-base/`.
 ## Input
 
 - Miguel's structured RFP analysis (in the conversation)
+- Knowledge base inventory from Chaski (document list with types, date ranges, confidence levels) — use as a map of what to read; still read the actual `knowledge-base/docs/` files for evidence
+- Gap assessment from Chaski (COVERED/PARTIAL/MISSING classification per data need) — use to prioritize which gaps to surface as Evidence Gap Notices; do not skip writing a section because Chaski already classified it MISSING; output the gap notice in the proposal
+- Confirmation that user chose option A (continue with gaps as notices) — proceed with drafting; do not stop to re-confirm
 - `knowledge-base/docs/` — read all files to find evidence
 - `knowledge-base/org-profile.md` — organizational context (treat as MEDIUM confidence at best; citations to org-profile.md are self-reported unless the profile cites a backing document)
 
