@@ -73,6 +73,8 @@ For each data need Miguel identified, determine:
 - **PARTIAL** — document exists but may not fully satisfy the need; note what is missing
 - **MISSING** — no document in the knowledge base covers this need
 
+Hold these results in memory — do not display them yet. They are rendered in Step 4's Coverage Report and passed to Maria in Step 5.
+
 ### Step 4: Human Gate — Coverage Report
 
 Present the following and wait for the user's explicit response before continuing:
@@ -114,6 +116,9 @@ Invoke the `grant-assistant:grant-maria` skill using the Skill tool.
 
 Pass Maria:
 - Miguel's full `=== MIGUEL: RFP ANALYSIS COMPLETE ===` block
+- The knowledge base inventory from Step 1 (document list with types, date ranges, confidence levels)
+- The gap assessment from Step 3 (COVERED/PARTIAL/MISSING classification for each data need)
+- Miguel's FORMAT CONSTRAINTS (so Maria knows the required sections and their scope)
 - Confirmation that the user chose option A and gaps will appear as notices
 
 Wait for Maria's complete `=== MARIA: DRAFTED SECTIONS ===` block before continuing.
@@ -160,8 +165,7 @@ NEXT STEPS:
 
 - Never skip the pre-flight check — do not draft with an empty knowledge base
 - Never skip Step 4 (Human Gate) — always show coverage before drafting
-- If any sub-skill produces unexpected output or reports an error: stop and explain
-  the issue to the user before continuing
+- If any sub-skill produces unexpected output or reports an error: stop, show the user the raw output received, explain which step failed, and suggest re-running `/grant-draft` after resolving the issue
 - Never attempt to fill evidence gaps by inferring or estimating — surface them always
 - Do not summarize or abbreviate the outputs from Miguel, Maria, Voice Waxer, or Mauricio
   — pass their full blocks through to the next step and to the final output
