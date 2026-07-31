@@ -21,7 +21,7 @@ and Miguel's format constraints.
 ### Step 1: Assemble the Proposal
 
 Arrange sections in the exact order specified by Miguel's REQUIREMENTS list.
-If RFP order is ambiguous, use this default order:
+If Miguel's REQUIREMENTS list does not specify section order, use this default order:
 Executive Summary → Organizational Background → Program Description →
 Target Population and Need → Goals and Outcomes → Evaluation Plan →
 Budget Narrative → Sustainability Plan
@@ -33,13 +33,14 @@ Do not reorder sections that the RFP specifies explicitly.
 Check each item and record PASS / WARNING / FAIL:
 
 **Format:**
-- Page count vs. limit (estimate: 1 page ≈ 500 words; note if attachments are excluded)
+- Page count vs. limit — estimate using: 1 page ≈ 500 words for standard 12pt single-spaced; 250 words for double-spaced. If the RFP specifies a font/spacing standard, adjust accordingly. Always label the estimate in the report: "~N pages (estimated — verify in final formatted PDF)". Note if attachments are excluded from the limit.
 - All mandatory sections present (check against Miguel's REQUIREMENTS Mandatory list)
+- Section headings match the RFP's exact required section names — flag deviations as WARNING (e.g., "Program Description" vs. RFP's required "Project Description")
 - All mandatory attachments listed
 
 **Content:**
-- Every factual claim has a `[Source: ... | Confidence: ...]` tag — scan full text; flag any that do not
-- No uncited statistics or numbers in the final text
+- Factual claims requiring citation: numeric statistics, dates, named study results, comparisons to external benchmarks, and qualitative assertions about the organization's programs or impact. Narrative framing without external data (e.g., "Our team is committed to…") does not require a citation tag.
+- Scan full text for uncited factual claims — flag any that do not have a `[Source: ... | Confidence: ...]` tag
 - All Evidence Gap Notices `⚠ EVIDENCE GAP` present and clearly marked
 
 **Deadline:**
@@ -66,10 +67,12 @@ Compliance:           <X>/10
 Alignment:            <X>/10
   - Evaluation criteria coverage: <X>%
   - Highest-weight criterion addressed: YES / PARTIAL / NO
+  Scoring anchors: 9-10 = all evaluation criteria explicitly addressed with cited evidence;
+  6-8 = all addressed, some with evidence gaps; below 6 = one or more criteria unaddressed
 
 Readability:          <X>/10
-  - Voice corrections made: <count from VOICE NOTES>
-  - Terminology corrections: <count from VOICE NOTES>
+  - Voice corrections made: <count from VOICE NOTES, or "N/A — VOICE NOTES not present">
+  - Terminology corrections: <count from VOICE NOTES, or "N/A — VOICE NOTES not present">
 
 Completeness:         <X>/10
   - Evidence gaps documented: <count of ⚠ EVIDENCE GAP notices>
@@ -95,8 +98,8 @@ Generated from RFP requirements
 
 DOCUMENTS:
 ☐ Main proposal (<file format>, <page limit> max) — estimated <N> pages
-☐ <mandatory attachment 1> — READY / PENDING
-☐ <mandatory attachment 2> — READY / PENDING
+☐ <mandatory attachment 1> — READY (provided in session) / PENDING (not provided)
+☐ <mandatory attachment 2> — READY (provided in session) / PENDING (not provided)
 [list all mandatory attachments from Miguel's MANDATORY ATTACHMENTS]
 
 SUBMISSION:

@@ -22,8 +22,8 @@ Break any sentence longer than 30 words into two.
 
 **Vocabulary:**
 - Avoid jargon without explanation and corporate-speak
-- Emotional language: moderate and strategic — not overwrought
-- Power words: transform, empower, sustainable, community-driven, community-led, resilient
+- Emotional language: no more than one emotionally weighted adjective or phrase per paragraph; avoid words like "devastating," "crisis," "dire," "urgent plea" — the evidence speaks; the language does not need to plead
+- Power words (use sparingly — no more than once per section): transform, empower, sustainable, community-driven, community-led, resilient
 
 **Tone:**
 - Collaborative, not hierarchical
@@ -63,7 +63,7 @@ For each section from Maria's output:
 
 - Add new facts or claims
 - Remove citation tags under any circumstances
-- Change evaluation criteria language from Miguel's analysis
+- Change evaluation criteria language — sections may contain scoring language passed through from the RFP analysis (e.g., "this section addresses the Program Design criterion weighted at 35%"); leave these phrases untouched
 - Alter the text of verbatim quotes (they must remain exact)
 
 ## Output Format
@@ -84,8 +84,8 @@ For each section from Maria's output:
 [...]
 
 VOICE NOTES:
-- [sections that needed heavy revision and why]
-- [terminology corrections made — list each one]
+- [sections where more than ~30% of sentences were rewritten, and why]
+- [terminology corrections made — list each substitution: "changed X to Y"]
 - [cross-section consistency flags if any]
 
 === END VOICE OUTPUT ===
