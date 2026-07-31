@@ -1,5 +1,5 @@
 # Knowledge Base Index
-Last updated: [date]
+Last updated: 2026-07-31
 
 | File | Type | Date Range | Confidence | Key Metrics |
 |---|---|---|---|---|
