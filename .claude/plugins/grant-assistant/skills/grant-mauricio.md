@@ -14,7 +14,8 @@ and Miguel's format constraints.
 
 - Voice Waxer's styled sections (in conversation)
 - Miguel's FORMAT CONSTRAINTS and REQUIREMENTS (in conversation)
-- `knowledge-base/INDEX.md` (read for citation verification)
+- `knowledge-base/INDEX.md` (read for document inventory)
+- `knowledge-base/docs/<slug>.md` files (read for confidence levels — frontmatter is authoritative; do not rely on INDEX.md confidence column)
 
 ## Task
 

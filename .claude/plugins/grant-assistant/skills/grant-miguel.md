@@ -84,7 +84,7 @@ LOW PRIORITY (optional or low-weight):
 - [data type needed] — required for: [RFP section/requirement]
   (write "- None" if no low-priority data needs)
 
-=== END MIGUEL OUTPUT ===
+=== END MIGUEL: RFP ANALYSIS COMPLETE ===
 ```
 
 **Note on section references:** Use the RFP's own section headings (e.g., "Section 3: Eligibility") or page numbers if headings are absent. Be consistent throughout the output.

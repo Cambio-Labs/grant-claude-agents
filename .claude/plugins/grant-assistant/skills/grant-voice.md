@@ -55,6 +55,7 @@ For each section from Maria's output:
 
 - All citation tags `[Source: ... | Confidence: ...]` — do not move, remove, or alter
 - All Evidence Gap Notices `⚠ EVIDENCE GAP` — do not remove
+- All `CHALLENGE FLAGS (Section: ...)` blocks — do not remove or alter
 - All section headings
 - All factual content — do not add, remove, or change numbers, names, or claims
 - Verbatim quotes already embedded in the text

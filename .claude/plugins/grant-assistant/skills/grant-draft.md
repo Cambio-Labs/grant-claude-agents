@@ -55,6 +55,7 @@ Run the following steps in order. Do not skip any step.
 
 Read `knowledge-base/INDEX.md` and `knowledge-base/org-profile.md`.
 Note all available documents, their types, date ranges, and confidence levels.
+Note: Maria will re-read `knowledge-base/org-profile.md` directly when drafting; Chaski need not pass it separately.
 
 ### Step 2: Run Miguel (RFP Analysis)
 
@@ -104,7 +105,12 @@ A) Continue drafting — gaps will appear as Evidence Gap Notices in the proposa
 B) Stop here — add missing documents with /grant-library add, then re-run /grant-draft
 ```
 
-Wait for the user to type A or B (or equivalent intent).
+**If MISSING and PARTIAL counts are both zero** (all data needs are COVERED): skip the A/B prompt and proceed directly to Step 5.
+
+**If ALL data needs are MISSING** (zero COVERED): warn the user before presenting the A/B choice:
+"⚠ Warning: no knowledge base documents cover any of the RFP's data needs. The proposal will consist entirely of Evidence Gap Notices with no drafted prose. Do you want to continue anyway (A) or stop to add documents (B)?"
+
+Otherwise: wait for the user to type A or B (or equivalent intent).
 
 If B: stop. Remind the user to run `/grant-library add` for each missing document type.
 

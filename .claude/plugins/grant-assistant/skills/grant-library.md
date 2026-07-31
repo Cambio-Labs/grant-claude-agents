@@ -106,9 +106,9 @@ If none: "No caveats noted in document"
      - Coverage gaps: Run `/grant-library status` for analysis
      ```
    - If re-adding (slug already existed): update the existing row rather than adding a duplicate
-   - Add or update row: `| <slug>.md | <type> | <date-range> | <confidence> | <2-3 key metrics from step 6, verbatim from document> |`
+   - Add or update row first: `| <slug>.md | <type> | <date-range> | <confidence> | <2-3 key metrics from step 6, verbatim from document> |`
    - Update "Last updated" date to today
-   - Update "Total documents indexed" count by counting rows in the table
+   - Then update "Total documents indexed" count by counting all data rows in the table (after the row has been added)
 
 8. Confirm to user:
 
