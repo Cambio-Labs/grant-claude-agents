@@ -3,6 +3,9 @@
 Manage the grant assistant knowledge base. Run this before `/grant-draft` to ensure
 documents are indexed and available for citation.
 
+All paths in this skill are relative to the project root — the directory that contains
+the `knowledge-base/` folder and `.claude/` directory.
+
 ## When This Skill Is Active
 
 When the user invokes `/grant-library` with a subcommand: `add`, `list`, or `status`.
@@ -36,7 +39,9 @@ Process a document and add it to the knowledge base.
    - Programs mentioned with brief descriptions
    - Named partners and funders
    - Geographic focus / service areas
-   - Up to 5 verbatim quotes suitable for narrative use, with page/section references
+   - Up to 5 verbatim quotes that are representative of the document's content or directly
+     support quantitative claims (not chosen for narrative appeal — chosen for accuracy)
+     Include page/section references for each quote.
    - Data caveats or limitations explicitly noted in the document
 
 4. Assign base confidence:
@@ -45,8 +50,12 @@ Process a document and add it to the knowledge base.
    - LOW — anecdotal, estimated, or undated document
 
 5. Generate filename slug:
-   - Use original filename if from a file path (strip extension, use as slug)
+   - Use original filename if from a file path: strip extension, lowercase, replace spaces
+     and special characters with hyphens (e.g. `2024 Annual Report (FINAL).pdf` → `2024-annual-report-final`)
    - If pasted: use `pasted-[type]-[YYYY-MM-DD]`
+   - Check if `knowledge-base/docs/<slug>.md` already exists. If it does, ask the user:
+     "A document with slug `<slug>` is already indexed. Overwrite it, or create a new entry
+     with suffix `-v2`?"
 
 6. Write summary to `knowledge-base/docs/<slug>.md` using this exact format:
 
@@ -84,9 +93,22 @@ If none: "No caveats noted in document"
 ```
 
 7. Update `knowledge-base/INDEX.md`:
-   - Add row to the table: `| <slug>.md | <type> | <date-range> | <confidence> | <2-3 key metrics> |`
+   - If `knowledge-base/INDEX.md` does not exist, create it with this header before adding the row:
+     ```
+     # Knowledge Base Index
+     Last updated: [today's date]
+
+     | File | Type | Date Range | Confidence | Key Metrics |
+     |---|---|---|---|---|
+
+     ## Summary
+     - Total documents indexed: 0
+     - Coverage gaps: Run `/grant-library status` for analysis
+     ```
+   - If re-adding (slug already existed): update the existing row rather than adding a duplicate
+   - Add or update row: `| <slug>.md | <type> | <date-range> | <confidence> | <2-3 key metrics from step 6, verbatim from document> |`
    - Update "Last updated" date to today
-   - Update "Total documents indexed" count
+   - Update "Total documents indexed" count by counting rows in the table
 
 8. Confirm to user:
 
@@ -100,9 +122,11 @@ Knowledge base now contains <N> documents.
 Run `/grant-library status` to see coverage gaps.
 ```
 
+Count "N documents" by counting data rows in the updated INDEX.md table.
+
 ### HARD RULE
-Never write a value in the summary file that cannot be directly quoted or referenced
-from the document. If a number appears without a clear source section, write
+Never write a value in the summary file or INDEX.md row that cannot be directly quoted
+or referenced from the document. If a number appears without a clear source section, write
 `[unverified — confirm source]`. Never infer, estimate, or extrapolate.
 
 ---
@@ -133,8 +157,22 @@ Show all indexed documents.
 
 Show data coverage vs. common grant requirements.
 
-1. Read `knowledge-base/INDEX.md` and all files in `knowledge-base/docs/`
-2. Check for these commonly required grant data types:
+1. If `knowledge-base/INDEX.md` does not exist or has no data rows, output:
+   ```
+   Knowledge base is empty. Run `/grant-library add [filepath]` to add your first document.
+   ```
+   Stop.
+
+2. Read `knowledge-base/INDEX.md` and all files in `knowledge-base/docs/`
+
+3. For each of the 9 data types below, check the indexed documents and classify:
+   - **Available** — at least one document contains this data at HIGH or MEDIUM confidence,
+     and the data appears to be current (within 2 years) or is not time-sensitive
+   - **Partial** — data exists but is incomplete, outdated (>2 years old), or only at LOW
+     confidence; note specifically what is missing or why it is partial
+   - **Missing** — no document in the knowledge base contains this data type
+
+   Data types to check:
    - Participant/beneficiary counts (current year)
    - Program completion rates
    - Demographic breakdown (race/ethnicity, age, income)
@@ -145,7 +183,10 @@ Show data coverage vs. common grant requirements.
    - Letters of support / partnership documentation
    - Board of directors information
 
-3. Output:
+4. Use confidence from the individual `knowledge-base/docs/<slug>.md` frontmatter
+   (the `confidence:` field), not from the INDEX.md summary row, as the authoritative source.
+
+5. Output:
 
 ```
 KNOWLEDGE BASE STATUS
@@ -154,7 +195,7 @@ Available (can support grant claims):
 ✓ <data type> — <source file> [<confidence>]
 
 Partial (available but may be incomplete):
-⚠ <data type> — <source file> [<confidence>] — <what's missing>
+⚠ <data type> — <source file> [<confidence>] — <what's missing or why partial>
 
 Missing (common requirement not in knowledge base):
 ✗ <data type> — add with: /grant-library add <suggested source type>
@@ -162,32 +203,3 @@ Missing (common requirement not in knowledge base):
 RECOMMENDATION: Before running /grant-draft, consider adding:
 <prioritized list of highest-impact missing documents>
 ```
-
----
-
-## After creating the file, commit:
-
-```bash
-git add .claude/plugins/grant-assistant/skills/grant-library.md
-git commit -m "feat: add grant-library (Librarian) skill for knowledge base management"
-```
-
-## Context
-
-Working directory: `/Users/tranv/development/intern/cambio-lab-26/grant-claude-agents`
-
-This is Task 2 of 8 for the Cambio Labs grant-assistant plugin. The plugin's core design principle is anti-hallucination: Claude may only include facts that are directly traceable to source documents. This skill is the gateway — it indexes documents into `knowledge-base/docs/` as structured `.md` summaries so that the drafting agents (Miguel, Maria, Voice Waxer, Mauricio) can cite them precisely.
-
-Task 1 already created the directory structure. The skills directory already exists at `.claude/plugins/grant-assistant/skills/`.
-
-## Your Job
-
-Write the skill file with the exact content specified above. Do not add, remove, or paraphrase any section. The content IS the implementation — get it exactly right. After creating, verify line count and commit.
-
-## Report Format
-
-- **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
-- Files created
-- Line count
-- Commit SHA
-- Any concerns
