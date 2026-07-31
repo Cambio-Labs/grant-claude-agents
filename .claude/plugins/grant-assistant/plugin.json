@@ -1,0 +1,9 @@
+{
+  "name": "grant-assistant",
+  "version": "1.0.0",
+  "description": "AI grant writing assistant for Cambio Labs — evidence-only, citation-required proposals",
+  "skills": [
+    "grant-library",
+    "grant-draft"
+  ]
+}
