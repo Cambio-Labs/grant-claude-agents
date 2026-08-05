@@ -28,15 +28,24 @@ You interact with two commands only: `/grant-library` and `/grant-draft`.
 
 ---
 
-## Setup (one time)
+## Setup
 
-Open Claude Code in this directory:
+**Working directly in this repo** (Tran, or anyone with it cloned): open Claude Code in this directory — the plugin at `.claude/plugins/grant-assistant/` and the standalone skills in `.claude/skills/` are both already there. No install step needed.
+
+**Installing as a plugin elsewhere** (any teammate, in any project):
 
 ```
-cd /path/to/grant-claude-agents
+/plugin marketplace add Cambio-Labs/grant-claude-agents
+/plugin install grant-assistant@grant-claude-agents
 ```
 
-The plugin is already installed at `.claude/plugins/grant-assistant/`. No additional configuration needed.
+This bundles a real copy of `knowledge-base/` (org profile, voice profile, indexed documents) with the plugin — it works immediately, no need to re-add documents.
+
+### Staying up to date
+
+The plugin's version is tied to this repo's git commit history (not a fixed version number), so Claude Code checks for new commits automatically in the background each session and updates installed copies on its own — no manual reinstall needed to pick up new knowledge-base documents or skill changes pushed here.
+
+One caveat since this repo is **private**: that background check needs working git authentication. It works automatically if your git is set up over SSH (a key loaded in `ssh-agent`). Over HTTPS, the background check's first attempt can't use a stored credential helper, but it falls back to a full re-clone that does use your credentials — so it still catches up, just less efficiently. If updates ever seem stale, run `/plugin marketplace update` manually to force it.
 
 ---
 
