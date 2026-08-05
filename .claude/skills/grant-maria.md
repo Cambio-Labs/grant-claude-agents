@@ -1,3 +1,8 @@
+---
+name: grant-assistant:grant-maria
+description: Internal skill — match RFP requirements against knowledge base evidence and write cited proposal sections
+---
+
 # Grant Maria — Impact Validation & Writing Specialist
 
 Match RFP requirements against knowledge base evidence. Write proposal sections

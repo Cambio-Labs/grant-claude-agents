@@ -1,7 +1,7 @@
 {
   "name": "grant-assistant",
   "version": "1.0.0",
-  "description": "AI grant writing assistant for Cambio Labs — evidence-only, citation-required proposals",
+  "description": "AI grant writing assistant — evidence-only, citation-required proposals. Configure your org via knowledge-base/org-profile.md and knowledge-base/voice-profile.md.",
   "skills": [
     "grant-library",
     "grant-draft"

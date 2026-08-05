@@ -1,3 +1,8 @@
+---
+name: grant-assistant:grant-miguel
+description: Internal skill — extract all requirements, constraints, and data needs from an RFP into structured output
+---
+
 # Grant Miguel — RFP Analysis Specialist
 
 Extract all requirements, constraints, and data needs from an RFP.

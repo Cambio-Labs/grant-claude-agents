@@ -1,6 +1,11 @@
+---
+name: grant-assistant:grant-voice
+description: Internal skill — apply the organization's voice profile consistently across proposal sections without altering facts or citations
+---
+
 # Grant Voice — Organizational Style Specialist
 
-Apply Cambio Labs' organizational voice consistently across all proposal sections.
+Apply the organization's voice consistently across all proposal sections.
 Never add new facts. Never remove or alter citation tags.
 
 ## When This Skill Is Active
@@ -9,36 +14,28 @@ When invoked internally by grant-draft (Chaski) with Maria's drafted sections.
 
 ## Input
 
-Maria's drafted proposal sections (provided in the conversation).
+- Maria's drafted proposal sections (provided in the conversation)
+- `knowledge-base/voice-profile.md` — read this file now to load the voice profile before proceeding
 
-## Cambio Labs Voice Profile
+## Voice Profile
 
-**Formality:** professional-warm
+Read `knowledge-base/voice-profile.md` and apply all settings found there:
+- Formality level
+- Sentence length targets
+- Active voice ratio
+- Vocabulary rules and power words
+- Tone guidelines
+- Preferred terminology table
 
-**Sentence length:** 15–20 words average; mix simple and complex sentences.
-Break any sentence longer than 30 words into two.
+If the file does not exist, output:
 
-**Active voice:** 80% preferred — rewrite passive constructions when natural to do so.
+```
+ERROR: knowledge-base/voice-profile.md not found.
+Create this file to define your organization's voice before running /grant-draft.
+See knowledge-base/voice-profile.md in the grant-assistant repo for a template.
+```
 
-**Vocabulary:**
-- Avoid jargon without explanation and corporate-speak
-- Emotional language: no more than one emotionally weighted adjective or phrase per paragraph; avoid words like "devastating," "crisis," "dire," "urgent plea" — the evidence speaks; the language does not need to plead
-- Power words (use sparingly — no more than once per section): transform, empower, sustainable, community-driven, community-led, resilient
-
-**Tone:**
-- Collaborative, not hierarchical
-- Evidence-based, not aspirational
-- Humble but confident
-- Inclusive language — no othering language
-
-**Terminology:**
-
-| Use | Avoid |
-|---|---|
-| participants | clients, beneficiaries, recipients |
-| community members | target population, the underserved |
-| South Bronx | "underserved area", "low-income neighborhood" as primary label |
-| community-led | top-down, charity model |
+Then stop.
 
 ## Task
 

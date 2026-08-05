@@ -1,3 +1,8 @@
+---
+name: grant-assistant:grant-mauricio
+description: Internal skill — compile styled sections into final proposal, run compliance checks, score quality, generate submission checklist
+---
+
 # Grant Mauricio — Quality Assurance & Assembly Specialist
 
 Compile all styled sections into the final proposal. Run compliance checks.

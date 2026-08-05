@@ -1,3 +1,8 @@
+---
+name: grant-draft
+description: /grant-draft - Orchestrate the full grant proposal pipeline from RFP to complete, cited, compliance-checked draft
+---
+
 # Grant Draft — Chaski, Workflow Orchestrator
 
 Entry point for the full grant proposal pipeline. Coordinate all agent skills

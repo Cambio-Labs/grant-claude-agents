@@ -1,3 +1,8 @@
+---
+name: grant-library
+description: /grant-library - Manage the grant knowledge base; index and validate documents before running /grant-draft
+---
+
 # Grant Library — The Librarian
 
 Manage the grant assistant knowledge base. Run this before `/grant-draft` to ensure
