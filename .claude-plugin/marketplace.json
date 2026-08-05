@@ -8,7 +8,7 @@
     {
       "name": "grant-assistant",
       "source": "./.claude/plugins/grant-assistant",
-      "description": "AI grant writing assistant — evidence-only, citation-required proposals"
+      "description": "AI grant writing assistant — evidence-only, citation-required proposals, plus funder scouting via Notion MCP and Google Drive"
     }
   ]
 }

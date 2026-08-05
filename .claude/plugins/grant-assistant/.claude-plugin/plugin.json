@@ -1,7 +1,7 @@
 {
   "name": "grant-assistant",
   "version": "1.0.0",
-  "description": "AI grant writing assistant — evidence-only, citation-required proposals. Configure your org via knowledge-base/org-profile.md and knowledge-base/voice-profile.md.",
+  "description": "AI grant writing assistant — evidence-only, citation-required proposals, plus funder scouting. Configure your org via knowledge-base/org-profile.md and knowledge-base/voice-profile.md. Uses the bundled Notion MCP server (funder pipeline) and each teammate's personal Google Drive connector (past applications) when connected; falls back to local/bundled references otherwise.",
   "author": {
     "name": "Cambio Labs"
   }

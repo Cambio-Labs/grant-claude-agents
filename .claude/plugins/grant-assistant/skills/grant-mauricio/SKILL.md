@@ -26,7 +26,9 @@ and Miguel's format constraints.
 
 ### Step 1: Assemble the Proposal
 
-Arrange sections in the exact order specified by Miguel's REQUIREMENTS list.
+If Voice Waxer's output includes an `INTERNAL — NOT PART OF APPLICATION` block, set it aside — it must never appear inside the `=== FINAL PROPOSAL DRAFT ===` block, since that is what gets exported and submitted. Surface it instead in its own clearly-labeled block between the Submission Checklist and the Final Proposal Draft (see Step 5).
+
+Arrange the remaining sections in the exact order specified by Miguel's REQUIREMENTS list.
 If Miguel's REQUIREMENTS list does not specify section order, use this default order:
 Executive Summary → Organizational Background → Program Description →
 Target Population and Need → Goals and Outcomes → Evaluation Plan →
@@ -127,15 +129,27 @@ STATUS rules:
 
 ### Step 5: Output Final Proposal
 
-After the reports, output the assembled proposal:
+If an `INTERNAL — NOT PART OF APPLICATION` block was set aside in Step 1, output it here, clearly separated from the submission content:
+
+```
+=== INTERNAL FIT RATIONALE (NOT PART OF APPLICATION — DO NOT SUBMIT) ===
+
+[The block, unchanged]
+
+=== END INTERNAL FIT RATIONALE ===
+```
+
+Then output the assembled proposal:
 
 ```
 === FINAL PROPOSAL DRAFT ===
 
-[All styled sections in RFP-required order]
+[All styled sections in RFP-required order — the INTERNAL block must not appear here]
 
 === END FINAL PROPOSAL DRAFT ===
 ```
+
+**Where this should live:** default to creating a **Google Doc** (via the Google Drive connector, if connected on this account) titled `[Funder Name] – [Grant/Program Name] Draft`, so it's immediately shareable and commentable by the team. Ask the user if there's a specific Drive folder it should land in (e.g. inside the relevant program-area subfolder of Wins & Peer Reviewed, once it's actually won) — otherwise create it in the user's Drive root and share the link. If Google Drive isn't connected in this session, output the draft directly in chat instead and say so plainly — don't silently skip the Drive step.
 
 ## Rules
 

@@ -45,14 +45,17 @@ For each section from Maria's output:
 2. Fix all terminology to match the preferred terms table
 3. Convert passive constructions to active voice when natural
 4. Break sentences longer than 30 words into two
-5. Check cross-section consistency — all sections should feel the same voice
-6. Flag any section that sounds notably different from the others
+5. Structure for a busy reviewer: short paragraphs, headers or bold section labels matching the funder's own question numbering (from Miguel's REQUIREMENTS, passed through Maria's section names), bullets only where the funder's form itself uses them
+6. Check cross-section consistency — all sections should feel the same voice
+7. Flag any section that sounds notably different from the others
+8. If a section looks like it may run over a stated word/character limit (from Miguel's FORMAT CONSTRAINTS), note it in VOICE NOTES — Mauricio is the authoritative limit-checker, but flag it here too since a rewrite is the easiest place to trim
 
 ## Preserve — Do Not Alter
 
 - All citation tags `[Source: ... | Confidence: ...]` — do not move, remove, or alter
 - All Evidence Gap Notices `⚠ EVIDENCE GAP` — do not remove
 - All `CHALLENGE FLAGS (Section: ...)` blocks — do not remove or alter
+- The `INTERNAL — NOT PART OF APPLICATION` fit-rationale block, if present — style it like the rest, but never let it bleed into or get mistaken for a submission section
 - All section headings
 - All factual content — do not add, remove, or change numbers, names, or claims
 - Verbatim quotes already embedded in the text
@@ -68,6 +71,9 @@ For each section from Maria's output:
 
 ```
 === VOICE: STYLED SECTIONS ===
+
+INTERNAL — NOT PART OF APPLICATION
+[Carried through unchanged from Maria's output, if present — omit this block entirely if not applicable]
 
 ## [Section Name]
 
@@ -85,6 +91,9 @@ VOICE NOTES:
 - [sections where more than ~30% of sentences were rewritten, and why]
 - [terminology corrections made — list each substitution: "changed X to Y"]
 - [cross-section consistency flags if any]
+- [any section flagged as possibly over a stated word/character limit]
+
+GROUNDING USED: <carried through unchanged from Maria's output>
 
 === END VOICE OUTPUT ===
 ```
