@@ -1,0 +1,14 @@
+{
+  "name": "grant-claude-agents",
+  "owner": {
+    "name": "Cambio Labs"
+  },
+  "description": "Cambio Labs grant-writing assistant plugins",
+  "plugins": [
+    {
+      "name": "grant-assistant",
+      "source": "./.claude/plugins/grant-assistant",
+      "description": "AI grant writing assistant — evidence-only, citation-required proposals"
+    }
+  ]
+}
