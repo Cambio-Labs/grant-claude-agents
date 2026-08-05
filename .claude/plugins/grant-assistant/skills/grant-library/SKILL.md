@@ -9,7 +9,7 @@ Manage the grant assistant knowledge base. Run this before `/grant-draft` to ens
 documents are indexed and available for citation.
 
 All paths in this skill are relative to the project root — the directory that contains
-the `knowledge-base/` folder and `.claude/` directory.
+the `knowledge-base/` folder and `.claude/` directory — except this plugin bundles its own copy of `knowledge-base/` inside its own directory, so every `knowledge-base/...` path below is relative to `${CLAUDE_PLUGIN_ROOT}`, not the current project. Documents added here with `/grant-library add` are written into this install's own bundled copy — they stay local to this install and are not synced back to Cambio's shared source repo.
 
 ## When This Skill Is Active
 
@@ -58,11 +58,11 @@ Process a document and add it to the knowledge base.
    - Use original filename if from a file path: strip extension, lowercase, replace spaces
      and special characters with hyphens (e.g. `2024 Annual Report (FINAL).pdf` → `2024-annual-report-final`)
    - If pasted: use `pasted-[type]-[YYYY-MM-DD]`
-   - Check if `knowledge-base/docs/<slug>.md` already exists. If it does, ask the user:
+   - Check if `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/<slug>.md` already exists. If it does, ask the user:
      "A document with slug `<slug>` is already indexed. Overwrite it, or create a new entry
      with suffix `-v2`?"
 
-6. Write summary to `knowledge-base/docs/<slug>.md` using this exact format:
+6. Write summary to `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/<slug>.md` using this exact format:
 
 ```
 ---
@@ -97,8 +97,8 @@ If none: "No notable quotes identified"
 If none: "No caveats noted in document"
 ```
 
-7. Update `knowledge-base/INDEX.md`:
-   - If `knowledge-base/INDEX.md` does not exist, create it with this header before adding the row:
+7. Update `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md`:
+   - If `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md` does not exist, create it with this header before adding the row:
      ```
      # Knowledge Base Index
      Last updated: [today's date]
@@ -140,7 +140,7 @@ or referenced from the document. If a number appears without a clear source sect
 
 Show all indexed documents.
 
-1. Read `knowledge-base/INDEX.md`
+1. Read `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md`
 2. If file does not exist or table is empty (no data rows), output:
    ```
    Knowledge base is empty.
@@ -162,13 +162,13 @@ Show all indexed documents.
 
 Show data coverage vs. common grant requirements.
 
-1. If `knowledge-base/INDEX.md` does not exist or has no data rows, output:
+1. If `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md` does not exist or has no data rows, output:
    ```
    Knowledge base is empty. Run `/grant-library add [filepath]` to add your first document.
    ```
    Stop.
 
-2. Read `knowledge-base/INDEX.md` and all files in `knowledge-base/docs/`
+2. Read `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md` and all files in `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/`
 
 3. For each of the 9 data types below, check the indexed documents and classify:
    - **Available** — at least one document contains this data at HIGH or MEDIUM confidence,
@@ -188,7 +188,7 @@ Show data coverage vs. common grant requirements.
    - Letters of support / partnership documentation
    - Board of directors information
 
-4. Use confidence from the individual `knowledge-base/docs/<slug>.md` frontmatter
+4. Use confidence from the individual `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/<slug>.md` frontmatter
    (the `confidence:` field), not from the INDEX.md summary row, as the authoritative source.
 
 5. Output:

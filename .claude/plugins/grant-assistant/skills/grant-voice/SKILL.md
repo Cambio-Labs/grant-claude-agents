@@ -15,11 +15,11 @@ When invoked internally by grant-draft (Chaski) with Maria's drafted sections.
 ## Input
 
 - Maria's drafted proposal sections (provided in the conversation)
-- `knowledge-base/voice-profile.md` — read this file now to load the voice profile before proceeding
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-profile.md` — read this file now to load the voice profile before proceeding
 
 ## Voice Profile
 
-Read `knowledge-base/voice-profile.md` and apply all settings found there:
+Read `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-profile.md` and apply all settings found there:
 - Formality level
 - Sentence length targets
 - Active voice ratio
@@ -30,9 +30,9 @@ Read `knowledge-base/voice-profile.md` and apply all settings found there:
 If the file does not exist, output:
 
 ```
-ERROR: knowledge-base/voice-profile.md not found.
+ERROR: knowledge-base/voice-profile.md not found in this plugin's bundled knowledge base.
 Create this file to define your organization's voice before running /grant-draft.
-See knowledge-base/voice-profile.md in the grant-assistant repo for a template.
+See knowledge-base/voice-profile.md in the grant-claude-agents repo for a template.
 ```
 
 Then stop.

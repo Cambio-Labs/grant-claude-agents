@@ -8,7 +8,7 @@ description: Internal skill — compile styled sections into final proposal, run
 Compile all styled sections into the final proposal. Run compliance checks.
 Score quality. Generate submission checklist.
 
-All paths are relative to the project root — the directory containing `knowledge-base/`.
+This plugin bundles a copy of Cambio's `knowledge-base/` inside its own directory. All `knowledge-base/...` paths below are relative to `${CLAUDE_PLUGIN_ROOT}`, not the current project.
 
 ## When This Skill Is Active
 
@@ -19,8 +19,8 @@ and Miguel's format constraints.
 
 - Voice Waxer's styled sections (in conversation)
 - Miguel's FORMAT CONSTRAINTS and REQUIREMENTS (in conversation)
-- `knowledge-base/INDEX.md` (read for document inventory)
-- `knowledge-base/docs/<slug>.md` files (read for confidence levels — frontmatter is authoritative; do not rely on INDEX.md confidence column)
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md` (read for document inventory)
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/<slug>.md` files (read for confidence levels — frontmatter is authoritative; do not rely on INDEX.md confidence column)
 
 ## Task
 
@@ -157,4 +157,4 @@ Then output the assembled proposal:
 - If a factual claim has no citation tag: flag in WARNINGS, do not add a fake citation
 - If a mandatory section is missing: flag as CRITICAL ISSUE
 - Do not remove Evidence Gap Notices from the final draft — they must appear in the submitted version for human review
-- Source of truth for confidence levels: individual `knowledge-base/docs/<slug>.md` frontmatter, not the INDEX.md table
+- Source of truth for confidence levels: individual `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/<slug>.md` frontmatter, not the INDEX.md table

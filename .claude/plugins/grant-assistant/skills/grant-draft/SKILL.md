@@ -10,7 +10,7 @@ Entry point for Cambio Labs' grant workflow. This skill has two modes — figure
 1. **Draft mode** — someone needs a grant application, LOI, or funder-questionnaire drafted or answered. Runs the full agent pipeline (Miguel → Maria → Voice → Mauricio) to a complete, cited, compliance-checked draft.
 2. **Scout mode** — someone needs help finding, scoring, or logging a prospective funder or opportunity. No drafting involved.
 
-All paths are relative to the project root — the directory containing `knowledge-base/` and `.claude/`.
+This plugin bundles a copy of Cambio's actual `knowledge-base/` (org profile, voice profile, indexed documents) inside its own directory, so it works immediately after install with no setup. All `knowledge-base/...` paths below are relative to `${CLAUDE_PLUGIN_ROOT}` — i.e. read/write `${CLAUDE_PLUGIN_ROOT}/knowledge-base/...`, not a path relative to the current project.
 
 ## Grounding sources (both modes)
 
@@ -60,7 +60,7 @@ Before doing anything else, run both checks:
 
 **1. Check knowledge base:**
 
-Read `knowledge-base/INDEX.md`.
+Read `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md`.
 
 If the file does not exist or the table contains no data rows, output:
 
@@ -95,9 +95,9 @@ Run the following steps in order. Do not skip any step.
 
 #### Step 1: Load Knowledge Base Inventory
 
-Read `knowledge-base/INDEX.md` and `knowledge-base/org-profile.md`.
+Read `${CLAUDE_PLUGIN_ROOT}/knowledge-base/INDEX.md` and `${CLAUDE_PLUGIN_ROOT}/knowledge-base/org-profile.md`.
 Note all available documents, their types, date ranges, and confidence levels.
-Note: Maria will re-read `knowledge-base/org-profile.md` directly when drafting; Chaski need not pass it separately.
+Note: Maria will re-read `${CLAUDE_PLUGIN_ROOT}/knowledge-base/org-profile.md` directly when drafting; Chaski need not pass it separately.
 
 If the funder's name is known at this point, make sure it reaches Maria in Step 5 — she checks Google Drive's Wins & Peer Reviewed folder for that same funder first, since a repeat funder may have prior submissions worth reusing almost verbatim.
 
@@ -114,7 +114,7 @@ before continuing.
 Cross-check Miguel's DATA NEEDS list against the knowledge base inventory from Step 1.
 
 For each data need Miguel identified, determine:
-- **COVERED** — a document in `knowledge-base/docs/` satisfies it; note file and confidence level
+- **COVERED** — a document in `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/` satisfies it; note file and confidence level
 - **PARTIAL** — document exists but may not fully satisfy the need; note what is missing
 - **MISSING** — no document in the knowledge base covers this need
 

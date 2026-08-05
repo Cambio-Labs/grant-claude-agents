@@ -8,22 +8,22 @@ description: Internal skill — match RFP requirements against knowledge base ev
 Match RFP requirements against knowledge base evidence. Write proposal sections
 with inline citations. Output Evidence Gap Notices for anything unsupported.
 
-All paths are relative to the project root — the directory containing `knowledge-base/`.
+This plugin bundles a copy of Cambio's `knowledge-base/` inside its own directory. All `knowledge-base/...` paths below are relative to `${CLAUDE_PLUGIN_ROOT}`, not the current project.
 
 ## When This Skill Is Active
 
 When invoked internally by grant-draft (Chaski) with Miguel's structured output
-and access to `knowledge-base/`.
+and access to `${CLAUDE_PLUGIN_ROOT}/knowledge-base/`.
 
 ## Input
 
 - Miguel's structured RFP analysis (in the conversation)
 - The funder's name (from Chaski) — used to check Drive for repeat-funder history before anything else
-- Knowledge base inventory from Chaski (document list with types, date ranges, confidence levels) — use as a map of what to read; still read the actual `knowledge-base/docs/` files for evidence
+- Knowledge base inventory from Chaski (document list with types, date ranges, confidence levels) — use as a map of what to read; still read the actual `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/` files for evidence
 - Gap assessment from Chaski (COVERED/PARTIAL/MISSING classification per data need) — use to prioritize which gaps to surface as Evidence Gap Notices; do not skip writing a section because Chaski already classified it MISSING; output the gap notice in the proposal
 - Confirmation that user chose option A (continue with gaps as notices) — proceed with drafting; do not stop to re-confirm
-- `knowledge-base/docs/` — read all files to find evidence
-- `knowledge-base/org-profile.md` — organizational context (treat as MEDIUM confidence at best; citations to org-profile.md are self-reported unless the profile cites a backing document)
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/` — read all files to find evidence
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/org-profile.md` — organizational context (treat as MEDIUM confidence at best; citations to org-profile.md are self-reported unless the profile cites a backing document)
 - **Live Google Drive** (personal connector — each teammate enables it via Claude.ai/Desktop → Settings → Connectors; if not connected in this session, say so once and fall back to `references/vetted-language.md`): the `****WINS & PEER REVIEWED` folder. This is the best source of truth because it's real, funder-reviewed language, not a generic template. See `references/drive-map.md` for folder layout and search patterns.
 - **Live Notion** (via the `notion` MCP server, if connected): the "Social Media Planner" database as a minor source for storytelling/partner-mention language.
 
@@ -58,7 +58,7 @@ This tag must immediately follow the claim. Maria cannot decide a LOW claim is "
 
 ## Citation Tag Format
 
-Every factual or evaluative claim about the organization, its programs, or its impact MUST end with a citation tag. This includes numbers, statistics, outcomes, quotes, AND qualitative assertions (e.g., "deep community roots," "uniquely positioned," "proven track record"). This applies equally to evidence pulled from `knowledge-base/docs/` and from live Google Drive/Notion.
+Every factual or evaluative claim about the organization, its programs, or its impact MUST end with a citation tag. This includes numbers, statistics, outcomes, quotes, AND qualitative assertions (e.g., "deep community roots," "uniquely positioned," "proven track record"). This applies equally to evidence pulled from `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/` and from live Google Drive/Notion.
 
 ```
 [Source: <filename or Drive doc name> | <page or section> | Confidence: HIGH/MEDIUM/LOW]
@@ -131,7 +131,7 @@ Before drafting each section, check for weak evidence patterns. List findings in
 For each section required by the RFP (from Miguel's REQUIREMENTS):
 
 1. Check for prior work per "Before Drafting: Check What's Already There" above
-2. Read relevant files in `knowledge-base/docs/`, `knowledge-base/org-profile.md`, and live Drive/Notion if connected
+2. Read relevant files in `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/`, `${CLAUDE_PLUGIN_ROOT}/knowledge-base/org-profile.md`, and live Drive/Notion if connected
 3. Run Challenge Mode — identify weak evidence before writing
 4. Draft the section per "Writing in Cambio's Voice," with inline citation tags for every factual or evaluative claim
 5. For INSUFFICIENT evidence: output an Evidence Gap Notice instead of prose
@@ -142,7 +142,7 @@ Write sections in the order listed in Miguel's REQUIREMENTS.
 ## Hard Rules
 
 1. Never write a factual or evaluative claim without a citation tag — this includes numbers, statistics, outcomes, quotes, AND qualitative assertions about the organization or its programs
-2. Never cite a document not in `knowledge-base/docs/`, `knowledge-base/org-profile.md`, or an actual live Drive/Notion result — never a plausible-sounding source
+2. Never cite a document not in `${CLAUDE_PLUGIN_ROOT}/knowledge-base/docs/`, `${CLAUDE_PLUGIN_ROOT}/knowledge-base/org-profile.md`, or an actual live Drive/Notion result — never a plausible-sounding source
 3. INSUFFICIENT evidence = gap notice only — no prose for that claim
 4. Confidence levels are fixed — cannot upgrade without a stronger source document
 5. Quotes must be verbatim from the source file — no paraphrasing presented as a direct quote
@@ -176,7 +176,7 @@ CHALLENGE FLAGS (Section: [Section Name]):
 CHALLENGE FLAGS (Section: [Section Name]):
 - [flags raised for this section, or "None"]
 
-GROUNDING USED: <e.g. "knowledge-base only, Drive not connected" or "Drive: Kellogg 2024 LOI + knowledge-base/docs/2024-annual-report.md">
+GROUNDING USED: <e.g. "knowledge-base only, Drive not connected" or "Drive: Kellogg 2024 LOI + bundled knowledge-base/docs/2024-annual-report.md">
 
 === END MARIA OUTPUT ===
 ```
