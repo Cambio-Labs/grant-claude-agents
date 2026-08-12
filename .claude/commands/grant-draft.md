@@ -10,6 +10,8 @@ Entry point for Cambio Labs' grant workflow. This skill has two modes — figure
 1. **Draft mode** — someone needs a grant application, LOI, or funder-questionnaire drafted or answered. Runs the full agent pipeline (Miguel → Maria → Voice → Mauricio) to a complete, cited, compliance-checked draft.
 2. **Scout mode** — someone needs help finding, scoring, or logging a prospective funder or opportunity. No drafting involved.
 
+**Not this skill:** writing that isn't for a funder — donor emails, participant and community outreach, social posts, speeches, newsletters, investor and accelerator pitches. Those go to `/cambio-voice`, which picks the matching examples from Cambio's voice library and writes in that register. Hand off rather than drafting them here; this skill's evidence-and-citation machinery is built for funder submissions and makes everything else read like a grant application. If the ask is genuinely mixed — say, a donor email that leans on grant-backed outcome figures — draft here for the cited facts and say plainly that `/cambio-voice` is the better tool for the email itself.
+
 All paths are relative to the project root — the directory containing `knowledge-base/` and `.claude/`.
 
 ## Grounding sources (both modes)

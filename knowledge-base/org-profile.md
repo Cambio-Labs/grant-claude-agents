@@ -80,7 +80,7 @@ Long-term goal: expand nationally and internationally.
 
 ---
 
-## Primary Beneficiaries
+## Who We Serve
 
 **Primary:**
 - Low-income youth
@@ -154,8 +154,13 @@ Used for: entrepreneurship, coding, AI, workforce development, solar.
 
 [Note: verify these figures against primary source documents before citing in proposals]
 
-- 500+ participants served (earlier materials)
-- 600+ participants served (newer materials)
+**Which participant total to use:** the two figures below are not a range — they are the same metric
+from materials of different vintage. **Use 600+**, the newer figure, and never present them together
+or split the difference. The 500+ figure is retained only so an older document quoting it can be
+reconciled. Neither is verified against a primary source; treat both as MEDIUM confidence.
+
+- 600+ participants served (newer materials) ← use this one
+- 500+ participants served (earlier materials — superseded)
 - 95% BIPOC participants
 - Multiple entrepreneurship, solar workforce, coding, and Startup NYCHA cohorts
 
