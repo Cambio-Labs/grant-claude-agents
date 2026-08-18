@@ -17,7 +17,13 @@ Six AI agents collaborate in a fixed pipeline:
 | **Mauricio** | Assembles the proposal, runs compliance checks, scores quality |
 | **Chaski** | Orchestrates all the above from a single command |
 
-You interact with two commands only: `/grant-library` and `/grant-draft`.
+And one agent outside that pipeline:
+
+| Agent | Role |
+|---|---|
+| **Cambio Voice** | Writes non-funder material — donor emails, outreach, social, speeches, pitches — using real Cambio Labs writing as reference |
+
+You interact with three commands: `/grant-library`, `/grant-draft`, and `/cambio-voice`.
 
 ---
 
@@ -141,6 +147,75 @@ The `tests/` folder has a sample annual report excerpt and a sample RFP. To do a
 
 ---
 
+## Writing that isn't a grant
+
+Grant proposals are only part of what gets written. For donor emails, participant and community
+outreach, social posts, newsletters, speeches, investor pitches, and about-us copy:
+
+```
+/cambio-voice
+```
+
+It asks what you're writing and who reads it, then pulls the matching examples from the voice library
+and drafts in that register. It also rewrites: paste something in and ask to make it sound like
+Cambio Labs, and it will change how it reads without touching what it claims.
+
+Every output ends with a `VOICE REFERENCES` block naming exactly which examples it drew on — so you
+can tell whether the voice was matched against a real reference or extrapolated from an adjacent one.
+
+### The voice library
+
+`knowledge-base/voice-profile.md` describes the voice as rules. `knowledge-base/voice-library/` holds
+the **examples**. Rules alone produce prose that breaks none of them and still sounds like nobody;
+the examples are what fix that.
+
+```
+knowledge-base/voice-library/
+├── INDEX.md        # router: what you're writing → which references to load
+├── audit/          # AUTHORITATIVE — Cambio's own voice guide + 50-row real-copy database
+├── profiles/       # distilled voice cards, one per register
+└── sources/        # long-form real writing, with verbatim excerpts
+```
+
+**`audit/` is the authority.** It's Cambio Labs' own voice guide (`voice-audit-guide.md`) — eight
+rules, a unified CTA table, and rules written directly for AI agents including Claude Code — built
+from a real audit of 50 pieces of actual outbound copy (`sample-database.md`, also in `audit/`). Where
+anything else in the library conflicts with it, it wins. `/cambio-voice` and `grant-voice` both read
+it before anything else.
+
+`profiles/` and `sources/` are supplementary: hand-built cards derived from three long-form pieces
+(a pitch script, a manifesto, an album's front matter), useful for rhythm and structure where the
+audit's shorter real-copy rows don't cover the register.
+
+`INDEX.md` is the router. It maps each output type to a profile card and a short list of sources
+(plus the matching rows in the audit database), and only that row gets loaded — pulling the whole
+library at once averages the voices back into a generic register.
+
+Add a new long-form sample:
+
+```
+/grant-library add-voice [filepath or pasted transcript]
+```
+
+Two things the library is deliberately not: it is **never evidence** — nothing in it may be cited as
+the source of a factual claim, even when an excerpt contains a real number — and it **never overrides
+the terminology table** in `voice-profile.md` (which itself now has two tables: a core one for
+everyone, and a funder-facing word bank from the audit's Rule 08 — see that file).
+
+Current state: audit guide and 50-row database in; 6 of 10 hand-built profile sources indexed
+(investor pitch, board/strategy, and tech-vision registers are now backed by real transcripts), with
+the rest either awaiting transcript or (Harlem workshop) blocked on a video's sharing settings. Rows
+pointing at pending sources still work, but they say so in their output.
+
+### Sparky's voice — separate from this plugin
+
+`knowledge-base/sparky/conversation-log.md` is a real eval log of Sparky, the AI tutor embedded in
+the Journey platform — a distinct, live, unsupervised consumer of Cambio's voice, not something this
+plugin drives. Kept for reference and because it documents an open question ("is Sparky a distinct
+character or just Cambio's voice in a chat window?") flagged for Leadership.
+
+---
+
 ## Knowledge base location
 
 All indexed documents live in `knowledge-base/docs/`. Each document is saved as a structured markdown summary with:
@@ -188,6 +263,7 @@ grant-claude-agents/
 │           └── skills/
 │               ├── grant-library.md # /grant-library command
 │               ├── grant-draft.md   # /grant-draft command (Chaski)
+│               ├── cambio-voice.md  # /cambio-voice command
 │               ├── grant-miguel.md  # RFP analysis (internal)
 │               ├── grant-maria.md   # Writing (internal)
 │               ├── grant-voice.md   # Style (internal)
@@ -195,6 +271,11 @@ grant-claude-agents/
 ├── knowledge-base/
 │   ├── INDEX.md                     # Master document index
 │   ├── org-profile.md               # Cambio Labs organizational profile
+│   ├── voice-profile.md             # Voice rules (formality, terminology)
+│   ├── voice-library/               # Voice examples
+│   │   ├── INDEX.md                 # Router: output type → references
+│   │   ├── profiles/                # Distilled voice cards
+│   │   └── sources/                 # Real writing, verbatim excerpts
 │   └── docs/                        # Indexed document summaries
 ├── tests/
 │   ├── sample-rfp.md                # Sample RFP for testing
