@@ -12,7 +12,7 @@ Entry point for Cambio Labs' grant workflow. This skill has two modes — figure
 
 **Not this skill:** writing that isn't for a funder — donor emails, participant and community outreach, social posts, speeches, newsletters, investor and accelerator pitches. Those go to `/cambio-voice`, which picks the matching examples from Cambio's voice library and writes in that register. Hand off rather than drafting them here; this skill's evidence-and-citation machinery is built for funder submissions and makes everything else read like a grant application. If the ask is genuinely mixed — say, a donor email that leans on grant-backed outcome figures — draft here for the cited facts and say plainly that `/cambio-voice` is the better tool for the email itself.
 
-All paths are relative to the project root — the directory containing `${CLAUDE_PLUGIN_ROOT}/knowledge-base/` and `.claude/`.
+This plugin bundles a copy of Cambio's actual `knowledge-base/` (org profile, voice profile, voice library, indexed documents) inside its own directory, so it works immediately after install with no setup. Every `knowledge-base/...` path below is relative to `${CLAUDE_PLUGIN_ROOT}` — read `${CLAUDE_PLUGIN_ROOT}/knowledge-base/...`, not a path relative to the current project.
 
 ## Grounding sources (both modes)
 
