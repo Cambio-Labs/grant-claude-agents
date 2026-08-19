@@ -84,10 +84,12 @@ Stop. Do not continue until documents are added.
 **2. Check for RFP:**
 
 If the user ran `/grant-draft` with no document:
-  Ask: "Please paste the RFP text or provide the file path to the RFP document. If there's no formal RFP (e.g. this is an LOI), paste whatever prompt or questions the funder gave."
+  Ask: "Paste the RFP here (the full document, or a link to it). If it's not a formal RFP, paste whatever questions the funder gave."
 
-If a file path was provided: read the file using the Read tool.
-If text was pasted in the conversation: use it directly.
+Handle all three cases transparently:
+- If a **file path** was provided: read the file using the Read tool.
+- If a **link** was provided: attempt to fetch it. If fetch succeeds, use it. If fetch fails, respond: "I couldn't read that link. Can you paste the document text instead?" and wait for the text.
+- If **text** was pasted in the conversation: use it directly.
 
 ---
 

@@ -12,7 +12,7 @@ Entry point for Cambio Labs' grant workflow. This skill has two modes — figure
 
 **Not this skill:** writing that isn't for a funder — donor emails, participant and community outreach, social posts, speeches, newsletters, investor and accelerator pitches. Those go to `/cambio-voice`, which picks the matching examples from Cambio's voice library and writes in that register. Hand off rather than drafting them here; this skill's evidence-and-citation machinery is built for funder submissions and makes everything else read like a grant application. If the ask is genuinely mixed — say, a donor email that leans on grant-backed outcome figures — draft here for the cited facts and say plainly that `/cambio-voice` is the better tool for the email itself.
 
-This plugin bundles a copy of Cambio's actual `knowledge-base/` (org profile, voice profile, indexed documents) inside its own directory, so it works immediately after install with no setup. All `knowledge-base/...` paths below are relative to `${CLAUDE_PLUGIN_ROOT}` — i.e. read/write `${CLAUDE_PLUGIN_ROOT}/knowledge-base/...`, not a path relative to the current project.
+All paths are relative to the project root — the directory containing `${CLAUDE_PLUGIN_ROOT}/knowledge-base/` and `.claude/`.
 
 ## Grounding sources (both modes)
 
@@ -84,10 +84,12 @@ Stop. Do not continue until documents are added.
 **2. Check for RFP:**
 
 If the user ran `/grant-draft` with no document:
-  Ask: "Please paste the RFP text or provide the file path to the RFP document. If there's no formal RFP (e.g. this is an LOI), paste whatever prompt or questions the funder gave."
+  Ask: "Paste the RFP here (the full document, or a link to it). If it's not a formal RFP, paste whatever questions the funder gave."
 
-If a file path was provided: read the file using the Read tool.
-If text was pasted in the conversation: use it directly.
+Handle all three cases transparently:
+- If a **file path** was provided: read the file using the Read tool.
+- If a **link** was provided: attempt to fetch it. If fetch succeeds, use it. If fetch fails, respond: "I couldn't read that link. Can you paste the document text instead?" and wait for the text.
+- If **text** was pasted in the conversation: use it directly.
 
 ---
 
