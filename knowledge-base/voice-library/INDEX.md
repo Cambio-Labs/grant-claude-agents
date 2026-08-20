@@ -152,6 +152,16 @@ and still be the wrong reference for a given piece.
 Placeholders already exist for every pending source — that command fills one in and flips its status
 rather than creating a duplicate.
 
+To also check whether a real, published document is strong enough evidence to propose a new audit
+rule, a rule revision, or a new voice style (never applied automatically — always a draft for a human
+to review), use:
+
+```
+/cambio-voice add [filepath or pasted content]
+```
+
+See `audit/proposed-changes.md` for anything drafted this way.
+
 ## Precedence
 
 These govern different things rather than simply outranking each other:

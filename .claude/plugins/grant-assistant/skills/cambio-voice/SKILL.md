@@ -1,6 +1,6 @@
 ---
 name: cambio-voice
-description: /cambio-voice - Write or rewrite anything in Cambio Labs' actual voice, using the org's own voice audit guide and 50-row sample database plus a library of real pitches, manifestos, speeches, and talks as reference. Use for donor emails, participant and community outreach, social posts, newsletters, speeches, investor and accelerator pitches, values and about-us copy, and partner letters — any writing that is not a funder submission. Also use when someone asks to make existing text "sound like us," "sound less like AI," or "match our voice."
+description: /cambio-voice - Write or rewrite anything in Cambio Labs' actual voice, using the org's own voice audit guide and 50-row sample database plus a library of real pitches, manifestos, speeches, and talks as reference. Use for donor emails, participant and community outreach, social posts, newsletters, speeches, investor and accelerator pitches, values and about-us copy, and partner letters — any writing that is not a funder submission. Also use when someone asks to make existing text "sound like us," "sound less like AI," or "match our voice." /cambio-voice add [filepath] - Add a real, published Cambio Labs document as a voice reference, and propose an audit-guide update or new voice style if it's corroborated evidence of something the guide doesn't cover yet.
 ---
 
 # Cambio Voice
@@ -23,6 +23,9 @@ When someone invokes `/cambio-voice`, or asks for any non-funder writing: a dono
 or community outreach, a social post, a newsletter, a speech, an investor or accelerator pitch,
 values or about-us copy, a partner letter. Also when someone asks to make existing text sound like
 Cambio Labs, sound less like AI, or match the org's voice.
+
+When someone invokes `/cambio-voice add [filepath or pasted content]`, see the **Command: `/cambio-voice add`**
+section below instead of the writing flow.
 
 **Not this skill:** grant applications, LOIs, and funder questionnaires. Those go to `/grant-draft`,
 which enforces citations and evidence gaps. Say so and hand off rather than drafting one here.
@@ -232,6 +235,149 @@ Register: <matched | extrapolated — and why>
 
 When Structure or Register is `extrapolated`, that block is the disclosure — don't repeat it at
 length in the body. One short sentence up top is enough.
+
+---
+
+## Command: `/cambio-voice add [filepath or pasted content]`
+
+Add a real Cambio Labs document as a voice reference, and evaluate whether it's strong enough
+evidence to propose a change to the org's own audit guide or a new voice style. Indexing always
+happens; a proposal only happens when the evidence clears every gate below.
+
+### Step 1 — Index the sample
+
+Follow `/grant-library add-voice`'s indexing procedure exactly — see `skills/grant-library/SKILL.md`,
+"Command: `/grant-library add-voice`", steps 1–8. Same metadata (medium, speaker/author, date,
+origin), same placeholder-matching in `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/sources/`,
+same 5–8 observable-trait characterization, same verbatim excerpt selection (1,500–2,500 words), same
+file written to `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/sources/<slug>.md`, same
+source-manifest update in `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/INDEX.md`. Do not
+shortcut any of it — this step alone produces the same result as running `/grant-library add-voice`.
+
+### Step 2 — Eligibility gate
+
+Check the `origin` field captured in Step 1.
+
+- **`origin: not published`** (or no real URL/location) — stop here. Confirm the index using Step 1's
+  own confirmation format and do not proceed to Step 3. An unpublished draft is not evidence of what
+  Cambio Labs actually does.
+- **A real origin** (a URL, or a named live/sent location) — continue to Step 3.
+
+### Step 3 — Evaluate against the audit guide
+
+Read, in full:
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/audit/voice-audit-guide.md` — all 8 rules and Part 3
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/INDEX.md` — router, profile card manifest, precedence
+
+Using the observable traits characterized in Step 1, check each one against the 8 rules and the
+established profile cards. Classify every trait into exactly one bucket:
+
+- **Confirms** an existing rule or established profile card — no action.
+- **Contradicts** an existing rule consistently — a deliberate, repeated move that runs the other way,
+  not a one-off inconsistency — candidate: **rule revision**.
+- **Not covered** by any of the 8 rules, but a clear and repeatable move — candidate: **new rule**.
+- **Register doesn't match** any `status: established` profile card's traits, and doesn't match a
+  `pending-sources` card's placeholder either — candidate: **new voice style**.
+
+Only escalate a candidate when the evidence is genuinely clean. When in doubt, don't propose.
+
+### Step 4 — Corroboration check (required)
+
+For each candidate from Step 3, search for at least one other **real** source showing the same
+pattern:
+
+- `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/audit/sample-database.md` — scan the Verbatim
+  text, Location, and Register flag columns
+- other files in `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/sources/` with `status: indexed`
+  — check their "How the voice works" sections
+
+- **Found a second source** — proceed to Step 5 for this candidate.
+- **Found nothing** — drop the candidate. Do not write a proposal. The new source's own trait is
+  still recorded in its `sources/<slug>.md` file from Step 1, so if a *future* document shows the
+  same pattern, that future evaluation's search will find and corroborate this one then. Nothing
+  needs to be tracked separately now.
+
+### Step 5 — Draft the proposal
+
+For each corroborated candidate, append an entry to
+`${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/audit/proposed-changes.md` (create it with the
+header below if it doesn't exist yet).
+
+**Never edit `voice-audit-guide.md`, `sample-database.md`, or any file in `profiles/` directly — this
+command only ever proposes.**
+
+If the file doesn't exist, create it with:
+
+```
+# Proposed Voice Audit Changes
+
+Drafts for a human to review and, if approved, manually merge into `voice-audit-guide.md`,
+`sample-database.md`, or `../profiles/`. Nothing in this file is authoritative and nothing here
+is applied automatically. Generated by `/cambio-voice add`.
+
+---
+```
+
+Then append, numbering proposals sequentially:
+
+```
+## Proposal <N> — <YYYY-MM-DD>
+Status: PENDING REVIEW
+Type: <NEW RULE | RULE REVISION | NEW VOICE STYLE>
+Triggered by: <new source slug> (<origin>)
+Corroborated by: <sample-database.md row #(s), or other source slug(s)>
+
+<content — see format below by type>
+
+Reasoning: <what the shared pattern is and why it rises above a one-off>
+```
+
+Content by type:
+
+- **NEW RULE** — the exact shape of an existing rule: a title, `[REGISTER]` or `[SOURCING]` tag,
+  **Do** (real quote + source), **Don't** (real or plausible contrast), **When it applies**, **Why**
+  (tie to the ethos clause, per the guide's own pattern).
+- **RULE REVISION** — name the existing rule number, quote the specific text it conflicts with, quote
+  the new and corroborating evidence, then write the proposed revised rule text in full, not just a
+  diff.
+- **NEW VOICE STYLE** — a full draft profile card in the exact template used by `profiles/*.md`
+  (frontmatter: `profile`, `status: proposed`, `scope`, `backed-by`; body: When to use this / What it
+  sounds like / Signature moves / Lines that exemplify it / What to avoid), plus a proposed new router
+  row for `INDEX.md`'s Router table (columns: #, Writing this, Profile, Load these sources — leave `#`
+  blank, a human assigns it on merge).
+
+### Step 6 — Note the pending count (visibility only, not authoritative)
+
+In `${CLAUDE_PLUGIN_ROOT}/knowledge-base/voice-library/INDEX.md`, under the existing "Audit manifest"
+table, add or update one line: `**Pending proposals:** <N> — see
+[`audit/proposed-changes.md`](audit/proposed-changes.md)`. This is a pointer only — never add
+proposed content into the router, manifest, or precedence tables themselves.
+
+### Step 7 — Confirm to the user
+
+```
+✓ Voice sample indexed: <slug>.md
+Medium: <medium> | Speaker/Author: <name> | Excerpts: <N> (~<N> words)
+
+<one of:>
+Not evaluated for audit changes — origin is unpublished/draft.
+Evaluated against voice-audit-guide.md (8 rules) and <N> established profile cards — no new rule or
+  style proposed, traits match existing guidance.
+Evaluated against voice-audit-guide.md (8 rules) and <N> established profile cards — <N> proposal(s)
+  drafted:
+  Proposal <N> (<type>) → audit/proposed-changes.md#proposal-<N>, corroborated by <source>.
+A trait didn't match existing guidance but wasn't corroborated elsewhere yet — no proposal drafted.
+```
+
+### HARD RULES for `/cambio-voice add`
+
+- **Never edit `voice-audit-guide.md`, `sample-database.md`, or any file in `profiles/`.** This
+  command only ever writes to `proposed-changes.md`. Those three stay entirely human-owned.
+- **Never evaluate an unpublished or draft document for a proposal.** Index it and stop at Step 2.
+- **Never draft a proposal without a second, real, corroborating source.** One document is a data
+  point, not a pattern.
+- **Always say "proposed," never "added" or "changed."** Nothing this command does is applied to the
+  org's actual voice rules until a human merges it by hand.
 
 ---
 
