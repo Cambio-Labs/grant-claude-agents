@@ -47,6 +47,10 @@ You interact with three commands: `/grant-library`, `/grant-draft`, and `/cambio
 
 This bundles a real copy of `knowledge-base/` (org profile, voice profile, indexed documents) with the plugin — it works immediately, no need to re-add documents.
 
+### Connecting your Google Drive (optional, per person)
+
+Funder scouting can pull from past applications in your personal Google Drive. This isn't bundled with the plugin — there's no shared/org-wide connection to install, since Google Drive access in Claude is a personal connector tied to your own account. To enable it: in Claude, go to **Settings → Connectors**, add **Google Drive**, and sign in. Each teammate who wants this does it once for their own account; skipping it just means the assistant falls back to local/bundled references instead of your Drive.
+
 ### Staying up to date
 
 The plugin's version is tied to this repo's git commit history (not a fixed version number), so Claude Code checks for new commits automatically in the background each session and updates installed copies on its own — no manual reinstall needed to pick up new knowledge-base documents or skill changes pushed here.
