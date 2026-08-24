@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grant Assistant — Internal Briefing</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500;1,8..60,600&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   THEME — Signal design system, translated to a
+   fixed 1920x1080 stage (vw/vh -> px at 1920x1080)
+   =========================================== */
+:root{
+    --navy:#1C2644; --navy-alt:#232F55; --cream:#F0ECE3; --cream-alt:#E6E0D4;
+    --text-warm:#E2DCD0; --text-muted-dark:#8A96A8; --text-hint-dark:#4E5A6E;
+    --ink:#1A2030; --text-muted-light:#5A6270; --text-hint-light:#9AA0A8;
+    --gold:#C8A870; --border-dark:#2E3D5C; --border-light:#CAC4B4;
+
+    --font-serif:'Source Serif 4', Georgia, serif;
+    --font-sans:'DM Sans', system-ui, sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+
+    --fs-display:182px; --fs-h1:100px; --fs-h2:56px; --fs-h3:34px;
+    --fs-lead:26px; --fs-body:19px; --fs-caption:15px; --fs-label:13px;
+    --fs-stat:100px; --fs-editorial:50px;
+
+    --pad-x:144px; --pad-y:60px; --gap-lg:44px; --gap-md:27px; --gap-sm:13px;
+
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --stage-bg:#000;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   =========================================== */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage-bg,#000);}
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--stage-bg,#000);}
+.deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transform-origin:0 0;background:var(--slide-bg,#fff);}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:block;visibility:hidden;opacity:0;pointer-events:none;background:var(--slide-bg,#fff);}
+.slide.active,.slide.visible{visibility:visible;opacity:1;pointer-events:auto;z-index:1;}
+img,video,canvas,svg{max-width:100%;max-height:100%;}
+.deck-controls{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:1000;}
+@media print{
+    html,body{width:1920px;height:auto;overflow:visible;background:#fff;}
+    .deck-viewport{position:static;overflow:visible;background:#fff;}
+    .deck-stage{position:static;width:auto;height:auto;transform:none!important;background:none;}
+    .slide{position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always;}
+    .slide:last-child{break-after:auto;page-break-after:auto;}
+    .deck-controls{display:none!important;}
+}
+@media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.2s!important;}
+}
+
+/* ===========================================
+   SURFACES
+   =========================================== */
+.slide.dark{background:var(--navy); color:var(--text-warm);}
+.slide.light{background:var(--cream); color:var(--ink);}
+.slide.dark::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size:80px 80px;
+}
+
+/* ===========================================
+   TYPOGRAPHY
+   =========================================== */
+h1,h2,h3{font-family:var(--font-serif); font-weight:600; letter-spacing:-0.01em;}
+em, .gold-em{font-style:italic; color:var(--gold); font-weight:500;}
+.slide.dark em, .slide.dark .gold-em{font-family:var(--font-serif);}
+p, .body-text{font-family:var(--font-sans); font-size:var(--fs-body); line-height:1.65;}
+.lead{font-family:var(--font-sans); font-size:var(--fs-lead); line-height:1.55; font-weight:400;}
+.slide.dark .lead{color:var(--text-muted-dark);}
+.slide.light .lead{color:var(--text-muted-light);}
+.mono{font-family:var(--font-mono);}
+.kicker{font-family:var(--font-mono); font-size:22px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--gold);}
+
+/* ===========================================
+   CHROME — top bar / foot bar (standard slides)
+   =========================================== */
+.chrome-bar{
+    position:absolute; left:var(--pad-x); right:var(--pad-x); top:52px;
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding-bottom:var(--gap-sm); font-family:var(--font-mono);
+    font-size:var(--fs-label); letter-spacing:.16em; text-transform:uppercase;
+}
+.slide.dark .chrome-bar{color:var(--gold); border-bottom:1px solid var(--border-dark);}
+.slide.light .chrome-bar{color:var(--gold); border-bottom:1px solid var(--border-light);}
+.chrome-counter{opacity:.85;}
+.foot-bar{
+    position:absolute; left:var(--pad-x); right:var(--pad-x); bottom:44px;
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding-top:var(--gap-sm); font-family:var(--font-mono); font-size:12px;
+    letter-spacing:.1em; text-transform:uppercase;
+}
+.slide.dark .foot-bar{color:var(--text-hint-dark); border-top:1px solid var(--border-dark);}
+.slide.light .foot-bar{color:var(--text-hint-light); border-top:1px solid var(--border-light);}
+
+.slide-body{
+    position:absolute; left:var(--pad-x); right:var(--pad-x); top:150px; bottom:110px;
+}
+
+/* ===========================================
+   COMPONENTS
+   =========================================== */
+.rule-short{width:36px; height:1px; background:var(--gold);}
+.rule-full{height:1px;}
+.slide.dark .rule-full{background:var(--border-dark);}
+.slide.light .rule-full{background:var(--border-light);}
+
+.tag{
+    display:inline-block; border:1px solid var(--gold); color:var(--gold);
+    padding:6px 16px; font-family:var(--font-mono); font-size:var(--fs-label);
+    letter-spacing:.12em; text-transform:uppercase;
+}
+
+/* two-column compare */
+.compare{display:flex; height:100%; gap:0;}
+.compare .panel{flex:1; padding:0 40px;}
+.compare .panel:first-child{padding-left:0;}
+.compare .panel:last-child{padding-right:0; border-left:1px solid var(--border-dark);}
+.slide.light .compare .panel:last-child{border-left:1px solid var(--border-light);}
+.panel h3{font-size:var(--fs-h3); margin-bottom:16px;}
+
+/* cycle steps row */
+.cycle-row{display:flex; gap:24px; height:100%;}
+.cycle-step{flex:1; border-top:2px solid var(--gold); padding:22px 20px 0 0; display:flex; flex-direction:column;}
+.cycle-num{font-family:var(--font-mono); font-size:var(--fs-label); color:var(--gold); letter-spacing:.1em; margin-bottom:10px;}
+.cycle-title{font-family:var(--font-serif); font-weight:600; font-size:26px; margin-bottom:10px;}
+.cycle-body{font-family:var(--font-sans); font-size:16px; line-height:1.5;}
+.slide.dark .cycle-body{color:var(--text-muted-dark);}
+.slide.light .cycle-body{color:var(--text-muted-light);}
+
+/* stat / info cards grid */
+.card-grid{display:grid; gap:22px; height:100%;}
+.card-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.card-grid.cols-4{grid-template-columns:repeat(4,1fr);}
+.info-card{border-top:1px solid var(--border-dark); padding-top:20px;}
+.slide.light .info-card{border-top:1px solid var(--border-light);}
+.info-card .card-label{font-family:var(--font-mono); font-size:var(--fs-label); letter-spacing:.1em; color:var(--gold); margin-bottom:12px; text-transform:uppercase;}
+.info-card .card-title{font-family:var(--font-serif); font-weight:600; font-size:28px; margin-bottom:10px;}
+.info-card .card-body{font-family:var(--font-sans); font-size:16px; line-height:1.55;}
+.slide.dark .info-card .card-body{color:var(--text-muted-dark);}
+.slide.light .info-card .card-body{color:var(--text-muted-light);}
+
+/* timeline */
+.timeline{position:relative; padding-left:44px; height:100%;}
+.timeline::before{content:'';position:absolute; left:9px; top:6px; bottom:6px; width:1px; background:var(--border-dark);}
+.slide.light .timeline::before{background:var(--border-light);}
+.t-item{position:relative; padding-bottom:16px;}
+.t-item::before{content:''; position:absolute; left:-40px; top:6px; width:9px; height:9px; border-radius:50%; background:var(--gold);}
+.t-item .t-num{font-family:var(--font-mono); font-size:13px; color:var(--gold); letter-spacing:.1em; margin-right:10px;}
+.t-item .t-title{font-family:var(--font-serif); font-weight:600; font-size:22px;}
+.t-item .t-desc{font-family:var(--font-sans); font-size:15px; line-height:1.5; margin-top:3px;}
+.slide.dark .t-item .t-desc{color:var(--text-muted-dark);}
+.slide.light .t-item .t-desc{color:var(--text-muted-light);}
+
+/* code / mono block */
+.codeblock{
+    font-family:var(--font-mono); font-size:16px; line-height:1.7;
+    border:1px solid var(--border-dark); padding:18px 22px; white-space:pre-wrap;
+}
+.slide.dark .codeblock{background:var(--navy-alt); color:var(--text-warm); border-color:var(--border-dark);}
+.slide.light .codeblock{background:var(--cream-alt); color:var(--ink); border-color:var(--border-light);}
+.codeblock .comment{opacity:.55;}
+.codeblock .gold-line{color:var(--gold);}
+
+/* bullet list with em-dash gold marker */
+ul.dash-list{list-style:none;}
+ul.dash-list li{position:relative; padding-left:26px; margin-bottom:14px; font-family:var(--font-sans); font-size:var(--fs-body); line-height:1.55;}
+ul.dash-list li::before{content:'—'; position:absolute; left:0; color:var(--gold); font-family:var(--font-mono);}
+.slide.dark ul.dash-list li{color:var(--text-warm);}
+.slide.light ul.dash-list li{color:var(--ink);}
+ul.dash-list li b{font-weight:600;}
+.slide.dark ul.dash-list li b{color:var(--text-warm);}
+
+/* tree diagram */
+.tree{font-family:var(--font-mono); font-size:18px; line-height:2.1;}
+.tree .dim{opacity:.5;}
+.tree .hl{color:var(--gold);}
+
+/* ===========================================
+   REVEAL ANIMATIONS
+   =========================================== */
+.reveal{opacity:0; transform:translateY(26px); transition:opacity .7s var(--ease-spring), transform .7s var(--ease-spring);}
+.slide.visible .reveal{opacity:1; transform:translateY(0);}
+.reveal.d1{transition-delay:.05s;} .reveal.d2{transition-delay:.14s;} .reveal.d3{transition-delay:.23s;}
+.reveal.d4{transition-delay:.32s;} .reveal.d5{transition-delay:.41s;} .reveal.d6{transition-delay:.5s;}
+.reveal.d7{transition-delay:.59s;} .reveal.d8{transition-delay:.68s;}
+
+/* ===========================================
+   COVER / STATEMENT / END LAYOUTS (chromeless)
+   =========================================== */
+.chromeless{}
+.cover-kicker{position:absolute; top:88px; left:144px; font-family:var(--font-mono); font-size:20px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase;}
+.cover-kicker::before{content:''; display:inline-block; width:8px; height:8px; background:var(--gold); border-radius:50%; margin-right:14px; vertical-align:middle;}
+.cover-date{position:absolute; top:88px; right:144px; font-family:var(--font-mono); font-size:18px; letter-spacing:.08em; color:var(--text-muted-dark);}
+.cover-rule{position:absolute; left:144px; right:144px; top:150px; height:1px; background:var(--border-dark);}
+.cover-h1{position:absolute; left:144px; top:352px; width:1500px; font-family:var(--font-serif); font-weight:600; font-size:140px; line-height:1.02; color:var(--text-warm); letter-spacing:-.01em;}
+.cover-sub{position:absolute; left:148px; top:660px; width:1180px; font-family:var(--font-sans); font-size:30px; line-height:1.55; color:var(--text-muted-dark);}
+.cover-rule2{position:absolute; left:144px; right:144px; top:860px; height:1px; background:var(--border-dark);}
+.cover-meta{position:absolute; left:144px; right:144px; top:900px; display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:18px; color:var(--text-muted-dark); letter-spacing:.06em;}
+.cover-meta b{color:var(--gold); font-weight:500;}
+
+/* ===========================================
+   INLINE EDITING
+   =========================================== */
+.edit-hotzone{position:fixed; top:0; left:0; width:80px; height:80px; z-index:10000; cursor:pointer;}
+.edit-toggle{
+    position:fixed; top:16px; left:16px; z-index:10001;
+    width:44px; height:44px; border-radius:50%; border:1px solid var(--gold);
+    background:var(--navy); color:var(--gold); font-size:18px; cursor:pointer;
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+    display:flex; align-items:center; justify-content:center;
+}
+.edit-toggle.show, .edit-toggle.active{opacity:1; pointer-events:auto;}
+[contenteditable="true"]{outline:1px dashed var(--gold); outline-offset:4px;}
+.save-toast{
+    position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+    background:var(--navy); color:var(--text-warm); font-family:var(--font-mono);
+    font-size:13px; padding:10px 20px; border:1px solid var(--gold);
+    opacity:0; transition:opacity .3s ease; z-index:10002; pointer-events:none;
+}
+.save-toast.show{opacity:1;}
+
+/* ===========================================
+   NAV CONTROLS
+   =========================================== */
+.deck-controls{display:flex; align-items:center; gap:14px; font-family:var(--font-mono); color:#8A96A8; font-size:12px;}
+.nav-btn{width:34px; height:34px; border-radius:50%; border:1px solid #3a4568; background:rgba(28,38,68,.9); color:#E2DCD0; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center;}
+.nav-btn:hover{border-color:#C8A870; color:#C8A870;}
+.nav-counter{min-width:64px; text-align:center;}
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- ================= SLIDE 1 — COVER ================= -->
+<section class="slide dark chromeless active" id="s1">
+    <div class="cover-kicker reveal d1">CAMBIO LABS &middot; INTERNAL BRIEFING</div>
+    <div class="cover-date reveal d1">AUGUST 2026</div>
+    <div class="cover-rule reveal d2"></div>
+    <h1 class="cover-h1 reveal d3" contenteditable="false">Grant <em>Assistant</em></h1>
+    <p class="cover-sub reveal d4" contenteditable="false">Six AI agents, one fixed pipeline &mdash; an evidence-only grant writer that cites every claim and never fabricates a number.</p>
+    <div class="cover-rule2 reveal d5"></div>
+    <div class="cover-meta reveal d6"><span>Setup &middot; Use &middot; File-by-file</span><span><b>10</b>&nbsp;minute briefing</span></div>
+</section>
+
+<!-- ================= SLIDE 2 — WHAT IT IS ================= -->
+<section class="slide light chromeless" id="s2">
+    <div class="cover-kicker reveal d1" style="color:var(--gold);">WHAT IT IS</div>
+    <div class="cover-date reveal d1" style="color:var(--text-hint-light);">02 / 18</div>
+    <div class="cover-rule reveal d2" style="background:var(--border-light);"></div>
+    <h1 class="reveal d3" contenteditable="false" style="position:absolute; left:144px; top:280px; width:1560px; font-size:82px; line-height:1.14; color:var(--ink);">It drafts complete grant proposals from an RFP &mdash; and it is built to <em>never fabricate</em>.</h1>
+    <div style="position:absolute; left:144px; top:700px; width:1632px; display:flex; gap:40px;">
+        <div class="reveal d5" style="flex:1; border-top:1px solid var(--border-light); padding-top:20px;">
+            <div class="kicker" style="font-size:13px;">EVIDENCE&#8209;ONLY</div>
+            <p class="body-text" style="margin-top:10px; color:var(--text-muted-light);">Every claim, sourced.</p>
+        </div>
+        <div class="reveal d6" style="flex:1; border-top:1px solid var(--border-light); padding-top:20px;">
+            <div class="kicker" style="font-size:13px;">GAP, NOT GUESS</div>
+            <p class="body-text" style="margin-top:10px; color:var(--text-muted-light);"><span class="mono">&#9888; EVIDENCE GAP</span>, never invention.</p>
+        </div>
+        <div class="reveal d7" style="flex:1; border-top:1px solid var(--border-light); padding-top:20px;">
+            <div class="kicker" style="font-size:13px;">THREE COMMANDS</div>
+            <p class="body-text" style="margin-top:10px; color:var(--text-muted-light);"><span class="mono">/grant-library</span> &middot; <span class="mono">/grant-draft</span> &middot; <span class="mono">/cambio-voice</span></p>
+        </div>
+    </div>
+</section>
+
+<!-- ================= SLIDE 3 — PIPELINE AT A GLANCE ================= -->
+<section class="slide dark" id="s3">
+    <div class="chrome-bar"><span class="reveal d1">Overview</span><span class="chrome-counter reveal d1">03 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" contenteditable="false" style="font-size:var(--fs-h2); margin-bottom:36px;">Six agents. One fixed pipeline.</h2>
+        <div class="cycle-row reveal d2" style="height:340px;">
+            <div class="cycle-step"><div class="cycle-num">01</div><div class="cycle-title">Chaski</div><div class="cycle-body">Orchestrator.</div></div>
+            <div class="cycle-step"><div class="cycle-num">02</div><div class="cycle-title">Miguel</div><div class="cycle-body">Reads the RFP.</div></div>
+            <div class="cycle-step"><div class="cycle-num">03</div><div class="cycle-title">Maria</div><div class="cycle-body">Writes & cites.</div></div>
+            <div class="cycle-step"><div class="cycle-num">04</div><div class="cycle-title">Voice&nbsp;Waxer</div><div class="cycle-body">Sounds like us.</div></div>
+            <div class="cycle-step"><div class="cycle-num">05</div><div class="cycle-title">Mauricio</div><div class="cycle-body">Final QA.</div></div>
+        </div>
+        <div class="rule-full reveal d3" style="margin:36px 0 22px;"></div>
+        <div class="reveal d4" style="display:flex; gap:60px;">
+            <p class="lead" style="width:780px;"><b class="mono" style="color:var(--gold); font-style:normal;">grant-library</b> feeds the knowledge base &mdash; run it first.</p>
+            <p class="lead" style="width:780px;"><b class="mono" style="color:var(--gold); font-style:normal;">cambio-voice</b> sits outside this pipeline.</p>
+        </div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 4 — SETUP / CONNECTORS ================= -->
+<section class="slide dark" id="s5">
+    <div class="chrome-bar"><span class="reveal d1">Setup</span><span class="chrome-counter reveal d1">04 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); margin-bottom:36px;">Two optional, personal connectors</h2>
+        <div class="card-grid cols-3 reveal d2" style="height:420px;">
+            <div class="info-card">
+                <div class="card-label">Google Drive</div>
+                <div class="card-title">Personal, per person</div>
+                <div class="card-body">Settings &rarr; Connectors.</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Notion</div>
+                <div class="card-title">Bundled, OAuth once</div>
+                <div class="card-body">In <span class="mono">.mcp.json</span>.</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Neither connected?</div>
+                <div class="card-title">Falls back, says so</div>
+                <div class="card-body">No blocking, ever.</div>
+            </div>
+        </div>
+        <div class="rule-full reveal d3" style="margin:32px 0 20px;"></div>
+        <p class="lead reveal d4" style="width:1600px;"><b style="color:var(--text-warm); font-weight:600;">Staying current</b> &mdash; auto-updates each session; force with <span class="mono">/plugin marketplace update</span>.</p>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 6 — USE STEP 1: grant-library ================= -->
+<section class="slide light" id="s6">
+    <div class="chrome-bar"><span class="reveal d1">Use &middot; Step 1</span><span class="chrome-counter reveal d1">05 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); color:var(--ink); margin-bottom:12px;"><span class="mono" style="color:var(--gold); font-size:44px;">/grant-library</span> &mdash; index your evidence first</h2>
+        <div class="card-grid cols-3 reveal d2" style="height:400px; margin-top:34px;">
+            <div class="info-card">
+                <div class="card-label">add [filepath]</div>
+                <div class="card-title" style="font-size:24px;">Index a document</div>
+                <div class="card-body">Real numbers only.</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">list</div>
+                <div class="card-title" style="font-size:24px;">See what's indexed</div>
+                <div class="card-body">Full inventory.</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">status</div>
+                <div class="card-title" style="font-size:24px;">Find the gaps</div>
+                <div class="card-body">Available / Partial / Missing.</div>
+            </div>
+        </div>
+        <div class="tag reveal d3" style="margin-top:28px;">Hard rule</div>
+        <p class="lead reveal d3" style="width:1600px; margin-top:14px;">No number without a quote &mdash; unclear becomes <span class="mono">[unverified]</span>.</p>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 7 — USE STEP 2: grant-draft draft mode ================= -->
+<section class="slide dark" id="s7">
+    <div class="chrome-bar"><span class="reveal d1">Use &middot; Step 2</span><span class="chrome-counter reveal d1">06 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); margin-bottom:8px;"><span class="mono" style="color:var(--gold); font-size:44px;">/grant-draft</span> &mdash; draft mode, the full pipeline</h2>
+        <div class="reveal d2" style="margin-top:34px; display:grid; grid-template-columns:1fr 1fr; gap:0 70px;">
+            <div class="timeline">
+                <div class="t-item"><span class="t-num">00</span><span class="t-title">Pre-flight</span><div class="t-desc">Refuses an empty knowledge base.</div></div>
+                <div class="t-item"><span class="t-num">01</span><span class="t-title">Miguel</span><div class="t-desc">Extracts requirements.</div></div>
+                <div class="t-item"><span class="t-num">02</span><span class="t-title">Gap assessment</span><div class="t-desc">COVERED / PARTIAL / MISSING.</div></div>
+                <div class="t-item"><span class="t-num">03</span><span class="t-title">Human gate</span><div class="t-desc">You choose: continue or stop.</div></div>
+            </div>
+            <div class="timeline">
+                <div class="t-item"><span class="t-num">04</span><span class="t-title">Maria</span><div class="t-desc">Drafts with inline citations.</div></div>
+                <div class="t-item"><span class="t-num">05</span><span class="t-title">Voice Waxer</span><div class="t-desc">Applies our terminology.</div></div>
+                <div class="t-item"><span class="t-num">06</span><span class="t-title">Mauricio</span><div class="t-desc">Compliance, score, checklist.</div></div>
+                <div class="t-item"><span class="t-num">07</span><span class="t-title">Output</span><div class="t-desc">Report &rarr; checklist &rarr; draft.</div></div>
+            </div>
+        </div>
+        <p class="lead reveal d3" style="margin-top:20px;"><em>Nothing skips the human gate.</em></p>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 8 — USE STEP 2B: scout mode ================= -->
+<section class="slide light" id="s8">
+    <div class="chrome-bar"><span class="reveal d1">Use &middot; Step 2b</span><span class="chrome-counter reveal d1">07 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); color:var(--ink); margin-bottom:8px;"><span class="mono" style="color:var(--gold); font-size:44px;">/grant-draft</span> &mdash; scout mode, no drafting</h2>
+        <div class="card-grid cols-3 reveal d2" style="height:360px; margin-top:34px;">
+            <div class="info-card">
+                <div class="card-label">Hyperlocal quick wins</div>
+                <div class="card-title" style="font-size:30px; color:var(--gold); font-family:var(--font-serif);">$5K&ndash;$25K</div>
+                <div class="card-body">NYC, local banks, NYCHA.</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Unrestricted / capacity</div>
+                <div class="card-title" style="font-size:30px; color:var(--gold); font-family:var(--font-serif);">$25K&ndash;$100K</div>
+                <div class="card-body">Operating, staffing, systems.</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Strategic foundations</div>
+                <div class="card-title" style="font-size:30px; color:var(--gold); font-family:var(--font-serif);">$75K&ndash;$250K</div>
+                <div class="card-body">BIPOC entrepreneurship, AI, equity.</div>
+            </div>
+        </div>
+        <div class="rule-full reveal d3" style="margin:30px 0 20px; background:var(--border-light);"></div>
+        <p class="lead reveal d4" style="width:1600px;">Checks the pipeline first, rates 1&ndash;5, offers to log it.</p>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 9 — USE STEP 3: cambio-voice ================= -->
+<section class="slide dark" id="s9">
+    <div class="chrome-bar"><span class="reveal d1">Use &middot; Step 3</span><span class="chrome-counter reveal d1">08 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); margin-bottom:14px;"><span class="mono" style="color:var(--gold); font-size:44px;">/cambio-voice</span> &mdash; everything that isn't a funder submission</h2>
+        <p class="lead reveal d2" style="width:1500px; margin-bottom:30px;">Donor emails, social, speeches &mdash; not a grant.</p>
+        <ul class="dash-list reveal d3" style="width:1000px; float:left;">
+            <li>Matches <b>format, audience, reading level</b></li>
+            <li>Loads the real <b>voice-audit guide</b></li>
+            <li>Also <b>rewrites</b> existing text</li>
+        </ul>
+        <div class="codeblock reveal d4" style="float:right; width:560px; font-size:14px;">VOICE REFERENCES
+Writing: donor email, 6th-8th grade
+CTA used: Donate
+Router row: donor thank-you
+<span class="comment">... names exactly what it drew on</span></div>
+        <div style="clear:both;"></div>
+    </div>
+    <div class="foot-bar"><span class="mono">Not this skill: grant applications &amp; LOIs &mdash; those hand off to /grant-draft</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 10 — THE TRUST MECHANIC ================= -->
+<section class="slide light" id="s10">
+    <div class="chrome-bar"><span class="reveal d1">The Mechanic</span><span class="chrome-counter reveal d1">09 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); color:var(--ink); margin-bottom:30px;">Why nothing here reads like a hallucination</h2>
+        <div class="card-grid cols-4 reveal d2" style="height:220px;">
+            <div class="info-card"><div class="card-label">High</div><div class="card-body">Audited, &lt;2 years.</div></div>
+            <div class="info-card"><div class="card-label">Medium</div><div class="card-body">Self-reported or older.</div></div>
+            <div class="info-card"><div class="card-label">Low</div><div class="card-body"><span class="mono">[NEEDS REVIEW]</span> tag.</div></div>
+            <div class="info-card"><div class="card-label">Insufficient</div><div class="card-body">A gap notice, never prose.</div></div>
+        </div>
+        <div class="reveal d3" style="margin-top:36px; display:flex; gap:40px;">
+            <div style="flex:1;">
+                <div class="kicker" style="font-size:13px; margin-bottom:10px;">CITATION TAG</div>
+                <div class="codeblock">[Source: 2024-annual-report.md | p.12 | Confidence: HIGH]</div>
+            </div>
+            <div style="flex:1;">
+                <div class="kicker" style="font-size:13px; margin-bottom:10px;">EVIDENCE GAP NOTICE</div>
+                <div class="codeblock" style="font-size:14px;">&#9888; EVIDENCE GAP &mdash; [Requirement]
+Available / Missing / Recommendation
+Impact on proposal: HIGH / MEDIUM / LOW</div>
+            </div>
+        </div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 11 — INSIDE THE FILES (TREE) ================= -->
+<section class="slide dark" id="s11">
+    <div class="chrome-bar"><span class="reveal d1">Inside The Plugin</span><span class="chrome-counter reveal d1">10 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); margin-bottom:30px;">Thirteen files, one plugin</h2>
+        <div style="display:flex; gap:80px;">
+            <div class="tree reveal d2" style="flex:1;">
+.claude-plugin/<span class="hl">plugin.json</span><br>
+<span class="hl">.mcp.json</span><br>
+skills/<br>
+&nbsp;&nbsp;├ grant-library/<span class="hl">SKILL.md</span><br>
+&nbsp;&nbsp;├ grant-draft/<span class="hl">SKILL.md</span> <span class="dim">(+2 refs)</span><br>
+&nbsp;&nbsp;├ grant-miguel/<span class="hl">SKILL.md</span><br>
+&nbsp;&nbsp;├ grant-maria/<span class="hl">SKILL.md</span> <span class="dim">(+2 refs)</span><br>
+&nbsp;&nbsp;├ grant-voice/<span class="hl">SKILL.md</span><br>
+&nbsp;&nbsp;├ grant-mauricio/<span class="hl">SKILL.md</span><br>
+&nbsp;&nbsp;└ cambio-voice/<span class="hl">SKILL.md</span>
+            </div>
+            <div class="reveal d3" style="flex:1; padding-top:10px;">
+                <p class="lead" style="margin-bottom:20px;">Plus a bundled <span class="mono" style="color:var(--gold);">knowledge-base/</span> &mdash; zero setup.</p>
+                <p class="lead">Every path: <span class="mono" style="color:var(--gold);">${CLAUDE_PLUGIN_ROOT}/knowledge-base/...</span></p>
+            </div>
+        </div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 12 — FILE: plugin.json + .mcp.json ================= -->
+<section class="slide light" id="s12">
+    <div class="chrome-bar"><span class="reveal d1">File</span><span class="chrome-counter reveal d1">11 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); color:var(--ink); margin-bottom:36px;"><span class="mono" style="color:var(--gold); font-size:40px;">plugin.json</span> &amp; <span class="mono" style="color:var(--gold); font-size:40px;">.mcp.json</span> &mdash; the manifest</h2>
+        <div class="compare reveal d2" style="height:620px;">
+            <div class="panel">
+                <h3 style="color:var(--ink);">plugin.json</h3>
+                <p class="body-text" style="color:var(--text-muted-light); margin-bottom:16px;">The whole file:</p>
+                <div class="codeblock" style="font-size:15px; line-height:1.75;">{
+  "name": "grant-assistant",
+  "description": "evidence-only,
+    citation-required proposals,
+    plus funder scouting",
+  "author": { "name": "Cambio Labs" }
+}</div>
+            </div>
+            <div class="panel">
+                <h3 style="color:var(--ink);">.mcp.json</h3>
+                <p class="body-text" style="color:var(--text-muted-light); margin-bottom:20px;">One bundled server:</p>
+                <div class="codeblock" style="margin-bottom:20px;">"notion": {
+  "type": "http",
+  "url": "https://mcp.notion.com/mcp"
+}</div>
+                <p class="body-text" style="color:var(--text-muted-light);">Drive isn't here &mdash; it's personal.</p>
+            </div>
+        </div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 13 — FILE: grant-library/SKILL.md ================= -->
+<section class="slide dark" id="s13">
+    <div class="chrome-bar"><span class="reveal d1">File</span><span class="chrome-counter reveal d1">12 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); margin-bottom:10px;"><span class="mono" style="color:var(--gold); font-size:38px;">grant-library/SKILL.md</span> &mdash; the Librarian</h2>
+        <p class="lead reveal d2" style="margin-bottom:20px;">Two collections &mdash; never mixed:</p>
+        <div class="compare reveal d3" style="height:150px;">
+            <div class="panel">
+                <h3 style="font-size:24px;">Knowledge base</h3>
+                <p class="body-text" style="color:var(--text-muted-dark);"><b style="color:var(--gold); font-weight:600;">Citable</b>, with confidence.</p>
+            </div>
+            <div class="panel">
+                <h3 style="font-size:24px;">Voice library</h3>
+                <p class="body-text" style="color:var(--text-muted-dark);"><b style="color:var(--gold); font-weight:600;">Never</b> citable &mdash; style only.</p>
+            </div>
+        </div>
+        <div class="reveal d5" style="margin-top:14px;">
+            <p class="body-text"><span class="mono" style="color:var(--gold);">add</span> &middot; <span class="mono" style="color:var(--gold);">add-voice</span> &middot; <span class="mono" style="color:var(--gold);">list</span> &middot; <span class="mono" style="color:var(--gold);">status</span></p>
+        </div>
+        <div class="tag reveal d6" style="margin-top:16px;">Hard rule</div>
+        <p class="lead reveal d6" style="margin-top:10px;">Unclear source &rarr; <span class="mono">[unverified]</span>.</p>
+        <div class="kicker reveal d7" style="font-size:13px; margin-top:16px; margin-bottom:8px;">WHAT A KNOWLEDGE-BASE FILE ACTUALLY LOOKS LIKE</div>
+        <div class="codeblock reveal d7" style="font-size:14px; line-height:1.5; padding:12px 20px;">---
+source: 2024-annual-report.pdf | confidence: HIGH
+---
+## Key Metrics
+- Youth served: 342 [p.4]  &middot;  Completion rate: 78% [p.6]</div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 14 — FILE: grant-draft/SKILL.md (Chaski) ================= -->
+<section class="slide light" id="s14">
+    <div class="chrome-bar"><span class="reveal d1">File</span><span class="chrome-counter reveal d1">13 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); color:var(--ink); margin-bottom:10px;"><span class="mono" style="color:var(--gold); font-size:38px;">grant-draft/SKILL.md</span> &mdash; Chaski, the orchestrator</h2>
+        <p class="lead reveal d2" style="margin-bottom:24px; width:1600px;">Two modes. Grounds every claim: <b>Drive</b> &rarr; <b>Notion</b> &rarr; bundled.</p>
+        <div class="card-grid cols-3 reveal d3" style="height:150px;">
+            <div class="info-card"><div class="card-label">runs</div><div class="card-body">Miguel &rarr; Maria &rarr; Voice &rarr; Mauricio.</div></div>
+            <div class="info-card"><div class="card-label">owns</div><div class="card-body">The Human Gate.</div></div>
+            <div class="info-card"><div class="card-label">not this skill</div><div class="card-body">Hands off to <span class="mono">/cambio-voice</span>.</div></div>
+        </div>
+        <div class="tag reveal d4" style="margin-top:22px; border-color:var(--stamp-red, #a3312a);">Known gap</div>
+        <p class="lead reveal d4" style="margin-top:10px; width:1600px;">2 reference files still <b>&ldquo;NOT YET POPULATED.&rdquo;</b></p>
+        <div class="kicker reveal d5" style="font-size:13px; margin-top:22px; margin-bottom:10px;">WHAT THE HUMAN GATE ACTUALLY PRINTS</div>
+        <div class="codeblock reveal d5" style="font-size:14px; line-height:1.6; width:1200px;">KNOWLEDGE BASE COVERAGE REPORT
+RFP: Kellogg Youth Entrepreneurship Fund
+COVERED: ✓ Participant counts — 2024-annual-report.md [HIGH]
+MISSING: ✗ Longitudinal outcomes — needed for: Evaluation Plan
+2 of 3 data needs are fully covered.
+Options: A) Continue drafting  B) Stop, add documents</div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 15 — FILE: grant-miguel/SKILL.md ================= -->
+<section class="slide dark" id="s15">
+    <div class="chrome-bar"><span class="reveal d1">File</span><span class="chrome-counter reveal d1">14 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); margin-bottom:10px;"><span class="mono" style="color:var(--gold); font-size:38px;">grant-miguel/SKILL.md</span> &mdash; RFP analysis, no opinions</h2>
+        <ul class="dash-list reveal d2" style="width:900px; float:left; margin-top:24px;">
+            <li>Extracts <b>only</b> what's explicit</li>
+            <li><b>Never</b> touches our documents</li>
+            <li>Ambiguous &rarr; <span class="mono">[ambiguous &mdash; X]</span></li>
+            <li>Structure only, no prose</li>
+        </ul>
+        <div class="reveal d3" style="float:right; width:820px;">
+            <div class="kicker" style="font-size:13px; margin-bottom:12px;">OUTPUT BLOCKS, IN ORDER</div>
+            <div class="codeblock" style="font-size:15px; line-height:1.9;">FUNDER / GRANT NAME / DEADLINE
+REQUIREMENTS (Mandatory / Preferred / Optional)
+MANDATORY ATTACHMENTS
+FORMAT CONSTRAINTS
+EVALUATION CRITERIA
+DATA NEEDS (High / Medium / Low priority)</div>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="kicker reveal d4" style="font-size:13px; margin-top:34px; margin-bottom:10px;">WHAT IT ACTUALLY OUTPUTS</div>
+        <div class="codeblock reveal d4" style="font-size:14px; line-height:1.65; width:1200px;">=== MIGUEL: RFP ANALYSIS COMPLETE ===
+FUNDER: Kellogg Foundation
+GRANT NAME: Youth Entrepreneurship Fund
+DEADLINE: 2026-03-15 5:00 PM ET
+
+REQUIREMENTS:
+Mandatory:
+- Program description, max 2 pages [Section 3]</div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 16 — FILE: grant-maria/SKILL.md ================= -->
+<section class="slide light" id="s16">
+    <div class="chrome-bar"><span class="reveal d1">File</span><span class="chrome-counter reveal d1">15 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); color:var(--ink); margin-bottom:8px;"><span class="mono" style="color:var(--gold); font-size:38px;">grant-maria/SKILL.md</span> &mdash; writes only what's cited</h2>
+        <p class="lead reveal d2" style="margin-bottom:18px;">Every claim gets a <span class="mono">[Source: &hellip; | Confidence: &hellip;]</span> tag.</p>
+        <div class="kicker reveal d3" style="font-size:13px; margin-bottom:12px;">CHALLENGE MODE &mdash; RUN BEFORE EVERY SECTION</div>
+        <div class="card-grid cols-4 reveal d3" style="height:100px;">
+            <div class="info-card"><div class="card-body"><b>Semantic substitution</b></div></div>
+            <div class="info-card"><div class="card-body"><b>Stale benchmark</b></div></div>
+            <div class="info-card"><div class="card-body"><b>Undefined metric</b></div></div>
+            <div class="info-card"><div class="card-body"><b>Vague-to-specific upgrade</b></div></div>
+        </div>
+        <div class="rule-full reveal d4" style="margin:20px 0 14px; background:var(--border-light);"></div>
+        <p class="lead reveal d5" style="width:1600px;">2 more reference files &mdash; same <b>&ldquo;NOT YET POPULATED&rdquo;</b> gap.</p>
+        <div class="kicker reveal d6" style="font-size:13px; margin-top:26px; margin-bottom:10px;">A LINE OF WHAT SHE ACTUALLY WRITES</div>
+        <div class="codeblock reveal d6" style="font-size:14px; line-height:1.7; width:1600px;">Cambio Labs served 342 youth entrepreneurs across five NYC boroughs
+in 2024, with a 78% program completion rate [Source: 2024-annual-
+report.md | p.4, p.6 | Confidence: HIGH].</div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 17 — FILE: grant-voice + grant-mauricio ================= -->
+<section class="slide dark" id="s17">
+    <div class="chrome-bar"><span class="reveal d1">File</span><span class="chrome-counter reveal d1">16 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); margin-bottom:30px;"><span class="mono" style="color:var(--gold); font-size:36px;">grant-voice</span> &amp; <span class="mono" style="color:var(--gold); font-size:36px;">grant-mauricio</span> &mdash; style, then QA</h2>
+        <div class="compare reveal d2" style="height:460px;">
+            <div class="panel">
+                <h3>Voice Waxer</h3>
+                <ul class="dash-list">
+                    <li>Applies our word bank</li>
+                    <li>Passive &rarr; active</li>
+                    <li>Cuts &ldquo;thrilled,&rdquo; &ldquo;amazing&rdquo;</li>
+                    <li><b>Never</b> touches citations</li>
+                </ul>
+            </div>
+            <div class="panel">
+                <h3>Mauricio</h3>
+                <ul class="dash-list">
+                    <li>Assembles in RFP order</li>
+                    <li>Runs compliance checks</li>
+                    <li>Scores every category</li>
+                    <li>Builds the checklist</li>
+                </ul>
+            </div>
+        </div>
+        <div class="rule-full reveal d3" style="margin:24px 0 20px;"></div>
+        <div class="reveal d4" style="display:flex; gap:40px;">
+            <div style="flex:1;">
+                <div class="kicker" style="font-size:13px; margin-bottom:10px;">BEFORE &rarr; AFTER</div>
+                <div class="codeblock" style="font-size:14px; line-height:1.6;">&ldquo;We were thrilled to launch...&rdquo;
+&darr;
+&ldquo;We launched in three NYCHA sites in 2024...&rdquo;</div>
+            </div>
+            <div style="flex:1;">
+                <div class="kicker" style="font-size:13px; margin-bottom:10px;">MAURICIO'S SCORE OUTPUT</div>
+                <div class="codeblock" style="font-size:14px; line-height:1.6;">Evidence Quality:  8/10
+Compliance:        9/10
+Alignment:         7/10</div>
+            </div>
+        </div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 18 — FILE: cambio-voice + voice library ================= -->
+<section class="slide light" id="s18">
+    <div class="chrome-bar"><span class="reveal d1">File</span><span class="chrome-counter reveal d1">17 / 18</span></div>
+    <div class="slide-body">
+        <h2 class="reveal d1" style="font-size:var(--fs-h2); color:var(--ink); margin-bottom:10px;"><span class="mono" style="color:var(--gold); font-size:38px;">cambio-voice/SKILL.md</span> &mdash; and the library behind it</h2>
+        <div style="display:flex; gap:70px; margin-top:28px;">
+            <div class="tree reveal d2" style="flex:1; color:var(--ink);">
+voice-library/<br>
+&nbsp;&nbsp;├ <span class="hl">INDEX.md</span> <span class="dim">&mdash; the router</span><br>
+&nbsp;&nbsp;├ audit/ <span class="dim">&mdash; AUTHORITATIVE</span><br>
+&nbsp;&nbsp;│&nbsp;&nbsp;├ <span class="hl">voice-audit-guide.md</span><br>
+&nbsp;&nbsp;│&nbsp;&nbsp;└ <span class="hl">sample-database.md</span> <span class="dim">(50 rows)</span><br>
+&nbsp;&nbsp;├ profiles/ <span class="dim">&mdash; distilled cards</span><br>
+&nbsp;&nbsp;└ sources/ <span class="dim">&mdash; verbatim excerpts</span>
+            </div>
+            <div class="reveal d3" style="flex:1;">
+                <p class="lead" style="margin-bottom:18px;"><span class="mono" style="color:var(--gold);">/cambio-voice add</span> indexes, then checks 8 audit rules.</p>
+                <p class="lead">Only a <b>second, real source</b> gets a rule proposed &mdash; a human merges by hand.</p>
+            </div>
+        </div>
+        <div class="kicker reveal d4" style="font-size:13px; margin-top:32px; margin-bottom:10px;">WHAT A SOURCE FILE LOOKS LIKE</div>
+        <div class="codeblock reveal d4" style="font-size:14px; line-height:1.6; width:1600px;">---
+source: Founder's keynote, NYC Startup Week
+medium: spoken
+speaker: [Name]
+voice-tags: spoken, civic, personal
+status: indexed
+---
+## Characteristic excerpts
+**Opening move:** "I grew up two subway stops from here..."</div>
+    </div>
+    <div class="foot-bar"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+<!-- ================= SLIDE 19 — END / WRAP-UP ================= -->
+<section class="slide dark chromeless" id="s19">
+    <div class="cover-kicker reveal d1">NEXT STEPS</div>
+    <div class="cover-date reveal d1">18 / 18</div>
+    <div class="cover-rule reveal d2"></div>
+    <h1 class="reveal d3" contenteditable="false" style="position:absolute; left:144px; top:270px; width:1400px; font-family:var(--font-serif); font-weight:600; font-size:118px; line-height:1.04; color:var(--text-warm);">Try it <em>end to end</em>.</h1>
+    <div class="codeblock reveal d4" style="position:absolute; left:148px; top:540px; width:1100px; font-size:20px;">/grant-library add tests/sample-doc.md
+/grant-draft tests/sample-rfp.md</div>
+    <div class="reveal d5" style="position:absolute; left:148px; top:730px; width:1620px;">
+        <p class="lead" style="margin-bottom:12px; font-size:23px;"><b style="color:var(--gold); font-weight:500; font-style:italic;">Known gaps today</b> &mdash; 4 reference files still &ldquo;NOT YET POPULATED.&rdquo;</p>
+        <p class="lead" style="font-size:23px;"><b style="color:var(--gold); font-weight:500; font-style:italic;">Connect your own Drive &amp; Notion</b> for real funder-reviewed language.</p>
+    </div>
+    <div class="cover-rule2 reveal d6" style="top:975px;"></div>
+    <div class="cover-meta reveal d7" style="top:1010px;"><span>Grant Assistant</span><span>Cambio Labs Internal</span></div>
+</section>
+
+</main>
+</div>
+
+<!-- Edit mode affordance -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">&#9998;</button>
+<div class="save-toast" id="saveToast">Saved</div>
+
+<!-- Nav controls -->
+<div class="deck-controls">
+    <button class="nav-btn" id="prevBtn" title="Previous (&larr;)">&#8592;</button>
+    <span class="nav-counter" id="navCounter">01 / 18</span>
+    <button class="nav-btn" id="nextBtn" title="Next (&rarr;)">&#8594;</button>
+</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.currentSlide = 0;
+        this.stage = document.getElementById('deckStage');
+        this.counter = document.getElementById('navCounter');
+        this.setupStageScale();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupButtons();
+        this.showSlide(0);
+    }
+    setupStageScale() {
+        const scale = () => {
+            const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            const x = (window.innerWidth - 1920 * factor) / 2;
+            const y = (window.innerHeight - 1080 * factor) / 2;
+            this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+        };
+        scale();
+        window.addEventListener('resize', scale);
+    }
+    setupKeyboardNav() {
+        document.addEventListener('keydown', (e) => {
+            if (window.editor && window.editor.isActive && e.target.getAttribute && e.target.getAttribute('contenteditable')) return;
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); this.showSlide(this.currentSlide + 1); }
+            else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); this.showSlide(this.currentSlide - 1); }
+        });
+    }
+    setupTouchNav() {
+        let startX = 0;
+        this.stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, {passive:true});
+        this.stage.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - startX;
+            if (Math.abs(dx) > 60) { dx < 0 ? this.showSlide(this.currentSlide + 1) : this.showSlide(this.currentSlide - 1); }
+        }, {passive:true});
+        let wheelLock = false;
+        window.addEventListener('wheel', (e) => {
+            if (wheelLock) return;
+            if (Math.abs(e.deltaY) > 30) {
+                wheelLock = true;
+                e.deltaY > 0 ? this.showSlide(this.currentSlide + 1) : this.showSlide(this.currentSlide - 1);
+                setTimeout(() => wheelLock = false, 500);
+            }
+        }, {passive:true});
+    }
+    setupButtons() {
+        document.getElementById('prevBtn').addEventListener('click', () => this.showSlide(this.currentSlide - 1));
+        document.getElementById('nextBtn').addEventListener('click', () => this.showSlide(this.currentSlide + 1));
+    }
+    showSlide(index) {
+        this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+        this.slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === this.currentSlide);
+            slide.classList.toggle('visible', i === this.currentSlide);
+        });
+        this.counter.textContent = String(this.currentSlide + 1).padStart(2,'0') + ' / ' + this.slides.length;
+    }
+}
+
+/* ===========================================
+   INLINE EDIT MODE
+   =========================================== */
+class InlineEditor {
+    constructor() {
+        this.isActive = false;
+        this.toggle = document.getElementById('editToggle');
+        this.hotzone = document.getElementById('editHotzone');
+        this.toast = document.getElementById('saveToast');
+        this.editableSelectors = 'h1, h2, h3, p, .lead, .body-text, .card-title, .card-body, .cycle-title, .cycle-body, .t-title, .t-desc, .kicker, li';
+        this.bind();
+        this.restore();
+    }
+    bind() {
+        let hideTimeout = null;
+        const show = () => { clearTimeout(hideTimeout); this.toggle.classList.add('show'); };
+        const scheduleHide = () => { hideTimeout = setTimeout(() => { if (!this.isActive) this.toggle.classList.remove('show'); }, 400); };
+        this.hotzone.addEventListener('mouseenter', show);
+        this.hotzone.addEventListener('mouseleave', scheduleHide);
+        this.toggle.addEventListener('mouseenter', show);
+        this.toggle.addEventListener('mouseleave', scheduleHide);
+        this.hotzone.addEventListener('click', () => this.toggleEditMode());
+        this.toggle.addEventListener('click', () => this.toggleEditMode());
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'e' || e.key === 'E') && !(e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true')) {
+                this.toggleEditMode();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); this.save(); }
+        });
+    }
+    toggleEditMode() {
+        this.isActive = !this.isActive;
+        this.toggle.classList.toggle('active', this.isActive);
+        this.toggle.classList.toggle('show', this.isActive);
+        document.querySelectorAll(this.editableSelectors).forEach(el => {
+            el.setAttribute('contenteditable', this.isActive ? 'true' : 'false');
+        });
+        if (!this.isActive) this.save();
+    }
+    save() {
+        const data = {};
+        document.querySelectorAll('.slide').forEach((slide, i) => {
+            data[slide.id || ('slide-' + i)] = slide.innerHTML;
+        });
+        try { localStorage.setItem('grant-assistant-briefing', JSON.stringify(data)); } catch (e) {}
+        this.showToast();
+    }
+    restore() {
+        try {
+            const raw = localStorage.getItem('grant-assistant-briefing');
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            document.querySelectorAll('.slide').forEach((slide, i) => {
+                const key = slide.id || ('slide-' + i);
+                if (data[key]) slide.innerHTML = data[key];
+            });
+        } catch (e) {}
+    }
+    showToast() {
+        this.toast.textContent = 'Saved';
+        this.toast.classList.add('show');
+        setTimeout(() => this.toast.classList.remove('show'), 1400);
+    }
+}
+
+new SlidePresentation();
+window.editor = new InlineEditor();
+</script>
+</body>
+</html>
